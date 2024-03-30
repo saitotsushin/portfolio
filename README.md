@@ -70,3 +70,9 @@ Directory structure
 ```
   npm run prod
 ```
+* 謎の`_Hashエラー`について
+- squooshを削除
+- `npx browserslist@latest --update-db`を叩く→ダメ
+- brew update && brew upgrade opensslを叩く→ダメ→OpenSSLライブラリのアップデート
+未解決。
+`nodebrew use v16.1.0`バージョンを落として作業できた。

@@ -6,7 +6,7 @@ const StylelintPlugin = require('stylelint-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const ImageminWebpWebpackPlugin = require('imagemin-webp-webpack-plugin')
-const { optimizeImage } = require('./.squooshrc');
+// const { optimizeImage } = require('./.squooshrc');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 dotenv.config();
 
@@ -113,10 +113,7 @@ const config = {
                 {
                     from: path.resolve(__dirname, `${srcRelativePath}/assets/images`),
                     to: 'images/[name][ext]',
-                    noErrorOnMissing: true,
-                    transform: {
-                        transformer: mode === 'production' ? optimizeImage : content => content
-                    }
+                    noErrorOnMissing: true
                 }
             ]
         }),
