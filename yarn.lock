@@ -726,12 +726,16 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 "@types/json-schema@^7.0.5":
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 "@types/json-schema@^7.0.4":
@@ -747,11 +751,14 @@
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 "@types/loader-utils@^1.1.0":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@types/loader-utils/-/loader-utils-1.1.4.tgz#e8b44fda9e965e8c4eba864c7918e7f7528eaa25"
   integrity sha512-puqX4dZW2ZRAz0orsBvQx6SmuE0pf/iGFqkA7rH0nC/lfCS6H1pdkLIagb/Ud8QMQMG0UlyOE3Hpb+SgQIpTmA==
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -772,6 +779,8 @@
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     "@types/node" "*"
     "@types/webpack" "*"
@@ -787,6 +796,7 @@
   integrity sha512-LcsGbPomWsad6wmMNv7nBLw7YYYyfdYcz6xryKYQhx89c3XXan+8Q6AJ43G5XDIaklaVkK3mE4fCb0SBvMiPSQ==
 
 "@types/node@^8.0.51":
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -820,6 +830,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.63.tgz#f86775d576bc07a2992da244f41c23d3ba66d402"
   integrity sha512-g+nSkeHFDd2WOQChfmy9SAXLywT47WZBrGS/NC5ym5PJ8c8RC6l4pbGaUW/X0+eZJnXw6/AVNEouXWhV4iz72Q==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "8.10.63"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.63.tgz#f86775d576bc07a2992da244f41c23d3ba66d402"
+  integrity sha512-g+nSkeHFDd2WOQChfmy9SAXLywT47WZBrGS/NC5ym5PJ8c8RC6l4pbGaUW/X0+eZJnXw6/AVNEouXWhV4iz72Q==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 "@types/q@^1.5.1":
   version "1.5.2"
@@ -876,6 +891,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/@types/webpack-sources/-/webpack-sources-1.4.2.tgz#5d3d4dea04008a779a90135ff96fb5c0c9e6292c"
   integrity sha512-77T++JyKow4BQB/m9O96n9d/UUHWLQHlcqXb9Vsf4F1+wKNrrlWNFPDLKNT92RJnCSL6CieTc+NDXtCVZswdTw==
@@ -894,12 +910,18 @@
   resolved "https://registry.yarnpkg.com/@types/webpack-sources/-/webpack-sources-1.4.2.tgz#5d3d4dea04008a779a90135ff96fb5c0c9e6292c"
   integrity sha512-77T++JyKow4BQB/m9O96n9d/UUHWLQHlcqXb9Vsf4F1+wKNrrlWNFPDLKNT92RJnCSL6CieTc+NDXtCVZswdTw==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@types/webpack-sources/-/webpack-sources-1.4.2.tgz#5d3d4dea04008a779a90135ff96fb5c0c9e6292c"
+  integrity sha512-77T++JyKow4BQB/m9O96n9d/UUHWLQHlcqXb9Vsf4F1+wKNrrlWNFPDLKNT92RJnCSL6CieTc+NDXtCVZswdTw==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     "@types/node" "*"
     "@types/source-list-map" "*"
     source-map "^0.7.3"
 
 "@types/webpack@*":
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -946,6 +968,11 @@
   resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.22.tgz#ff9758a17c6bd499e459b91e78539848c32d0731"
   integrity sha512-JQDJK6pj8OMV9gWOnN1dcLCyU9Hzs6lux0wBO4lr1+gyEhIBR9U3FMrz12t2GPkg110XAxEAw2WHF6g7nZIbRQ==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "4.41.22"
+  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.22.tgz#ff9758a17c6bd499e459b91e78539848c32d0731"
+  integrity sha512-JQDJK6pj8OMV9gWOnN1dcLCyU9Hzs6lux0wBO4lr1+gyEhIBR9U3FMrz12t2GPkg110XAxEAw2WHF6g7nZIbRQ==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     "@types/anymatch" "*"
     "@types/node" "*"
@@ -1172,6 +1199,7 @@ aggregate-error@^3.0.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/aggregate-error/-/aggregate-error-3.1.0.tgz#92670ff50f5359bdb7a3e0d40d0ec30c5737687a"
   integrity sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==
@@ -1200,6 +1228,11 @@ aggregate-error@^3.0.0:
   resolved "https://registry.yarnpkg.com/aggregate-error/-/aggregate-error-3.1.0.tgz#92670ff50f5359bdb7a3e0d40d0ec30c5737687a"
   integrity sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/aggregate-error/-/aggregate-error-3.1.0.tgz#92670ff50f5359bdb7a3e0d40d0ec30c5737687a"
+  integrity sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
@@ -1219,12 +1252,16 @@ ajv-keywords@^3.1.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 ajv-keywords@^3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
   integrity sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -1250,6 +1287,8 @@ ajv-keywords@^3.4.1:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 ajv@^6.1.0, ajv@^6.9.1:
   version "6.10.0"
@@ -1266,12 +1305,16 @@ ajv@^6.1.0, ajv@^6.9.1:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 ajv@^6.12.4:
   version "6.12.4"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.4.tgz#0614facc4522127fa713445c6bfd3ebd376e2234"
   integrity sha512-eienB2c9qVQs2KWexhkrdMLVDoIQCz5KSeLxwg9Lzk4DOfBtIK9PQwwufcsn1jjGuf9WZmqPMbGxOzfcuphJCQ==
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 ajv@^6.12.0:
@@ -1293,6 +1336,8 @@ ajv@^6.12.2:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     fast-deep-equal "^3.1.1"
     fast-json-stable-stringify "^2.0.0"
@@ -2246,6 +2291,7 @@ chownr@^1.1.2:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
@@ -2274,6 +2320,11 @@ chownr@^1.1.2:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
+  integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 chrome-trace-event@^1.0.0:
   version "1.0.2"
@@ -2481,6 +2532,7 @@ commander@^2.19.0, commander@~2.20.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 commander@^2.20.0, commander@^2.8.1:
 =======
 commander@^2.20.0:
@@ -2497,6 +2549,9 @@ commander@^2.20.0:
 =======
 commander@^2.20.0:
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+commander@^2.20.0:
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   version "2.20.3"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
@@ -3892,6 +3947,7 @@ fast-deep-equal@^3.1.1:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
@@ -3915,6 +3971,11 @@ fast-deep-equal@^3.1.1:
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
+  integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 fast-glob@^2.0.2, fast-glob@^2.2.6:
   version "2.2.7"
@@ -4082,6 +4143,7 @@ find-cache-dir@^2.0.0, find-cache-dir@^2.1.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 19f04385bc748ee410d9f43f6ebc9449abd5a6c5
 =======
@@ -4090,6 +4152,8 @@ find-cache-dir@^2.0.0, find-cache-dir@^2.1.0:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 find-cache-dir@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/find-cache-dir/-/find-cache-dir-3.3.1.tgz#89b33fad4a4670daa94f855f7fbe31d6d84fe880"
@@ -4097,6 +4161,7 @@ find-cache-dir@^3.3.1:
   dependencies:
     commondir "^1.0.1"
     make-dir "^3.0.2"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -4118,6 +4183,8 @@ find-cache-dir@^3.2.0:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
     pkg-dir "^4.1.0"
 
 find-up@^1.0.0:
@@ -4285,6 +4352,7 @@ fs-minipass@^2.0.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/fs-minipass/-/fs-minipass-2.1.0.tgz#7f5036fdbf12c63c169190cbe4199c852271f9fb"
   integrity sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==
@@ -4313,6 +4381,11 @@ fs-minipass@^2.0.0:
   resolved "https://registry.yarnpkg.com/fs-minipass/-/fs-minipass-2.1.0.tgz#7f5036fdbf12c63c169190cbe4199c852271f9fb"
   integrity sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/fs-minipass/-/fs-minipass-2.1.0.tgz#7f5036fdbf12c63c169190cbe4199c852271f9fb"
+  integrity sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     minipass "^3.0.0"
 
@@ -4650,6 +4723,7 @@ graceful-fs@^4.2.2:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.3.tgz#4a12ff1b60376ef09862c2093edd908328be8423"
   integrity sha512-a30VEBm4PEdx1dRB7MFK7BejejvCvBronbLjht+sHuGYj8PHs7M/5Z+rt5lw551vZ7yfTCj4Vuyy3mSJytDWRQ==
@@ -4673,6 +4747,11 @@ graceful-fs@^4.2.2:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
   integrity sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
+  integrity sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 "graceful-readlink@>= 1.0.0":
   version "1.0.1"
@@ -5716,6 +5795,7 @@ isurl@^1.0.0-alpha5:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 19f04385bc748ee410d9f43f6ebc9449abd5a6c5
 =======
@@ -5724,6 +5804,8 @@ isurl@^1.0.0-alpha5:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 jest-worker@^25.4.0:
   version "25.5.0"
   resolved "https://registry.yarnpkg.com/jest-worker/-/jest-worker-25.5.0.tgz#2611d071b79cea0f43ee57a3d118593ac1547db1"
@@ -5731,6 +5813,7 @@ jest-worker@^25.4.0:
   dependencies:
     merge-stream "^2.0.0"
     supports-color "^7.0.0"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -5752,6 +5835,8 @@ jest-worker@^24.9.0:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 jpegtran-bin@^4.0.0:
   version "4.0.0"
@@ -6200,6 +6285,7 @@ make-dir@^2.0.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 19f04385bc748ee410d9f43f6ebc9449abd5a6c5
 =======
@@ -6208,10 +6294,13 @@ make-dir@^2.0.0:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 make-dir@^3.0.2:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-3.1.0.tgz#415e967046b3a7f1d185277d84aa58203726a13f"
   integrity sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -6230,6 +6319,8 @@ make-dir@^3.0.0:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     semver "^6.0.0"
 
@@ -6512,6 +6603,7 @@ minimist@^1.1.3, minimist@^1.2.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 19f04385bc748ee410d9f43f6ebc9449abd5a6c5
 =======
@@ -6520,11 +6612,14 @@ minimist@^1.1.3, minimist@^1.2.0:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 minimist@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -6539,6 +6634,8 @@ minimist@^1.2.5:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 minipass-collect@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/minipass-collect/-/minipass-collect-1.0.2.tgz#22b813bf745dc6edba2576b940022ad6edc8c617"
@@ -6559,6 +6656,7 @@ minipass-pipeline@^1.2.2:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/minipass-pipeline/-/minipass-pipeline-1.2.4.tgz#68472f79711c084657c067c5c6ad93cddea8214c"
   integrity sha512-xuIq7cIOt09RPRJ19gdi4b+RiNvDFYe5JH+ggNvBqGqpQXcru3PcRmOZuHBKWK1Txf9+cQ+HMVN4d6z46LZP7A==
@@ -6587,6 +6685,11 @@ minipass-pipeline@^1.2.2:
   resolved "https://registry.yarnpkg.com/minipass-pipeline/-/minipass-pipeline-1.2.4.tgz#68472f79711c084657c067c5c6ad93cddea8214c"
   integrity sha512-xuIq7cIOt09RPRJ19gdi4b+RiNvDFYe5JH+ggNvBqGqpQXcru3PcRmOZuHBKWK1Txf9+cQ+HMVN4d6z46LZP7A==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/minipass-pipeline/-/minipass-pipeline-1.2.4.tgz#68472f79711c084657c067c5c6ad93cddea8214c"
+  integrity sha512-xuIq7cIOt09RPRJ19gdi4b+RiNvDFYe5JH+ggNvBqGqpQXcru3PcRmOZuHBKWK1Txf9+cQ+HMVN4d6z46LZP7A==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     minipass "^3.0.0"
 
@@ -6604,6 +6707,7 @@ minipass@^3.0.0, minipass@^3.1.1:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/minipass/-/minipass-3.1.3.tgz#7d42ff1f39635482e15f9cdb53184deebd5815fd"
   integrity sha512-Mgd2GdMVzY+x3IJ+oHnVM+KG3lA5c8tnabyJKmHSaG2kAGpudxuOf8ToDkhumF7UzME7DecbQE9uOZhNm7PuJg==
@@ -6632,6 +6736,11 @@ minipass@^3.0.0, minipass@^3.1.1:
   resolved "https://registry.yarnpkg.com/minipass/-/minipass-3.1.3.tgz#7d42ff1f39635482e15f9cdb53184deebd5815fd"
   integrity sha512-Mgd2GdMVzY+x3IJ+oHnVM+KG3lA5c8tnabyJKmHSaG2kAGpudxuOf8ToDkhumF7UzME7DecbQE9uOZhNm7PuJg==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/minipass/-/minipass-3.1.3.tgz#7d42ff1f39635482e15f9cdb53184deebd5815fd"
+  integrity sha512-Mgd2GdMVzY+x3IJ+oHnVM+KG3lA5c8tnabyJKmHSaG2kAGpudxuOf8ToDkhumF7UzME7DecbQE9uOZhNm7PuJg==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     yallist "^4.0.0"
 
@@ -8373,6 +8482,7 @@ raw-loader@^4.0.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 19f04385bc748ee410d9f43f6ebc9449abd5a6c5
 =======
@@ -8381,12 +8491,15 @@ raw-loader@^4.0.0:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/raw-loader/-/raw-loader-4.0.1.tgz#14e1f726a359b68437e183d5a5b7d33a3eba6933"
   integrity sha512-baolhQBSi3iNh1cglJjA0mYzga+wePk7vdEX//1dTFd+v4TsQlQE0jitJSNF1OIP82rdYulH7otaVmdlDaJ64A==
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^2.6.5"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -8407,6 +8520,8 @@ raw-loader@^4.0.0:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 rc@^1.2.7:
   version "1.2.8"
@@ -8958,8 +9073,11 @@ schema-utils@^1.0.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 schema-utils@^2.6.5, schema-utils@^2.6.6:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-2.7.1.tgz#1ca4f32d1b24c590c203b8e7a50bf0ea4cd394d7"
@@ -8968,6 +9086,7 @@ schema-utils@^2.6.5, schema-utils@^2.6.6:
     "@types/json-schema" "^7.0.5"
     ajv "^6.12.4"
     ajv-keywords "^3.5.2"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 schema-utils@^2.5.0, schema-utils@^2.6.1:
@@ -9004,6 +9123,8 @@ schema-utils@^2.6.5, schema-utils@^2.6.6:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 scss-tokenizer@^0.2.3:
   version "0.2.3"
@@ -9093,14 +9214,18 @@ serialize-javascript@^1.7.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 serialize-javascript@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-4.0.0.tgz#b525e1238489a5ecfc42afacc3fe99e666f4b1aa"
   integrity sha512-GaNA54380uFefWghODBWEGisLZFj00nS5ACs6yHa9nLqlLpVLO8ChDGeKRjZnV4Nh4n0Qi7nhYZD/9fCPzEqkw==
   dependencies:
     randombytes "^2.1.0"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 serialize-javascript@^2.1.2:
@@ -9129,6 +9254,8 @@ serialize-javascript@^3.1.0:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 
 serve-index@^1.9.1:
   version "1.9.1"
@@ -9356,6 +9483,7 @@ source-map-support@~0.5.12:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "0.5.19"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.19.tgz#a98b62f86dcaf4f67399648c085291ab9e8fed61"
   integrity sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==
@@ -9384,6 +9512,11 @@ source-map-support@~0.5.12:
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.19.tgz#a98b62f86dcaf4f67399648c085291ab9e8fed61"
   integrity sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "0.5.19"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.19.tgz#a98b62f86dcaf4f67399648c085291ab9e8fed61"
+  integrity sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
@@ -9862,6 +9995,7 @@ supports-color@^7.0.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-7.2.0.tgz#1b7dcdcb32b8138801b3e478ba6a51caa89648da"
   integrity sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
@@ -9885,6 +10019,11 @@ supports-color@^7.0.0:
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-7.2.0.tgz#1b7dcdcb32b8138801b3e478ba6a51caa89648da"
   integrity sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-7.2.0.tgz#1b7dcdcb32b8138801b3e478ba6a51caa89648da"
+  integrity sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     has-flag "^4.0.0"
 
@@ -9998,6 +10137,7 @@ terser-webpack-plugin@^2.3.2:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-2.3.8.tgz#894764a19b0743f2f704e7c2a848c5283a696724"
   integrity sha512-/fKw3R+hWyHfYx7Bv6oPqmk4HGQcrWLtV3X6ggvPuwPNHSnzvVV51z6OaaCOus4YLjutYGOz3pEpbhe6Up2s1w==
@@ -10021,12 +10161,18 @@ terser-webpack-plugin@^2.3.2:
   resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-2.3.8.tgz#894764a19b0743f2f704e7c2a848c5283a696724"
   integrity sha512-/fKw3R+hWyHfYx7Bv6oPqmk4HGQcrWLtV3X6ggvPuwPNHSnzvVV51z6OaaCOus4YLjutYGOz3pEpbhe6Up2s1w==
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-2.3.8.tgz#894764a19b0743f2f704e7c2a848c5283a696724"
+  integrity sha512-/fKw3R+hWyHfYx7Bv6oPqmk4HGQcrWLtV3X6ggvPuwPNHSnzvVV51z6OaaCOus4YLjutYGOz3pEpbhe6Up2s1w==
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     cacache "^13.0.1"
     find-cache-dir "^3.3.1"
     jest-worker "^25.4.0"
     p-limit "^2.3.0"
     schema-utils "^2.6.6"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -10067,6 +10213,11 @@ terser-webpack-plugin@^2.3.2:
     source-map "^0.6.1"
     terser "^4.6.12"
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+    serialize-javascript "^4.0.0"
+    source-map "^0.6.1"
+    terser "^4.6.12"
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
     webpack-sources "^1.4.3"
 
 terser@^4.0.0:
@@ -10083,14 +10234,18 @@ terser@^4.0.0:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
 terser@^4.6.12:
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/terser/-/terser-4.8.0.tgz#63056343d7c70bb29f3af665865a46fe03a0df17"
   integrity sha512-EAPipTNeWsb/3wLPeup1tVPaXfIaU68xMnVdPafIL1TV05OhASArYyIfFvnvJCNrR2NIOvDVNNTFRa+Re2MWyw==
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -10115,6 +10270,8 @@ terser@^4.6.12:
 >>>>>>> 95ceed6d1d223807143aca9a82f09c7a998b154a
 =======
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
+=======
+>>>>>>> d4fe127c0728ecc0919c29b51894e161d3004f69
   dependencies:
     commander "^2.20.0"
     source-map "~0.6.1"
@@ -10262,9 +10419,9 @@ tough-cookie@~2.4.3:
     punycode "^1.4.1"
 
 tree-kill@^1.1.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.1.tgz#5398f374e2f292b9dcc7b2e71e30a5c3bb6c743a"
-  integrity sha512-4hjqbObwlh2dLyW4tcz0Ymw0ggoaVDMveUB9w8kFSQScdRLo0gxO9J7WFcUBo+W3C1TLdFIEwNOWebgZZ0RH9Q==
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
+  integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
 trim-newlines@^1.0.0:
   version "1.0.0"
