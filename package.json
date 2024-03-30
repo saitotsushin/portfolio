@@ -4,9 +4,32 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
+=======
+    "start": "concurrently \"webpack-dev-server\" \"yarn run watch:pug\" \"yarn run tsc -- -w\"",
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production",
+    "watch:pug": "pug src/pug/ --hierarchy -o dist/html -P -w",
+    "tsc": "tsc -p ./"
+  },
+  "keywords": [],
+  "author": "saitotsushin <saitotsushin@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "imports-loader": "^0.8.0",
+    "jquery": "^3.5.0",
+    "node-sass": "4.13.0",
+    "raw-loader": "^4.0.0",
+    "terser-webpack-plugin": "^2.3.2",
+    "three": "^0.112.1",
+    "three-obj-mtl-loader": "^1.0.3",
+    "webpack-glsl-loader": "^1.0.1",
+    "webpack-obj-loader": "^1.0.4",
+    "yui": "^3.18.1"
+>>>>>>> 19f04385bc748ee410d9f43f6ebc9449abd5a6c5
   },
   "devDependencies": {
     "sass": "^1.72.0",
