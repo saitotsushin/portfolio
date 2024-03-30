@@ -11,12 +11,16 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _module_sphere__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./module/sphere */ "./src/assets/scripts/module/sphere.js");
 /* harmony import */ var _module_stage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./module/stage */ "./src/assets/scripts/module/stage.js");
+/* harmony import */ var _module_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./module/object */ "./src/assets/scripts/module/object.js");
+
 
 
 var stage = new _module_stage__WEBPACK_IMPORTED_MODULE_1__.default();
 stage.init();
-var sphere = new _module_sphere__WEBPACK_IMPORTED_MODULE_0__.default(stage);
-sphere.init();
+var sphere = new _module_sphere__WEBPACK_IMPORTED_MODULE_0__.default(stage); // sphere.init();
+
+var object = new _module_object__WEBPACK_IMPORTED_MODULE_2__.default(stage);
+object.init();
 window.addEventListener("resize", function () {
   sphere.onResize();
   stage.onResize();
@@ -27,11 +31,91 @@ var _raf = function _raf() {
     _raf();
 
     sphere.onRaf();
+    object.onRaf();
     stage.onRaf();
   });
 };
 
 _raf();
+
+/***/ }),
+
+/***/ "./src/assets/scripts/module/object.js":
+/*!*********************************************!*\
+  !*** ./src/assets/scripts/module/object.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ _Object)
+/* harmony export */ });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/MTLLoader.js */ "./node_modules/three/examples/jsm/loaders/MTLLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/loaders/DDSLoader.js */ "./node_modules/three/examples/jsm/loaders/DDSLoader.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+
+
+var _Object = /*#__PURE__*/function () {
+  function Object(stage) {
+    _classCallCheck(this, Object);
+
+    this.color = '#fff';
+    this.stage = stage;
+  }
+
+  _createClass(Object, [{
+    key: "init",
+    value: function init() {
+      // 3Dモデルの読み込み
+      var stage = this.stage;
+      var manager = new three__WEBPACK_IMPORTED_MODULE_3__.LoadingManager();
+      manager.addHandler(/\.dds$/i, new three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_2__.DDSLoader()); // DDSローダーの準備
+      // MTLファイルの読み込み
+
+      new three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_1__.MTLLoader(manager).load('/assets/images/10778_Toilet_V2.mtl', // ロード完了時の処理
+      function (materials) {
+        materials.preload(); // OBJファイルの読み込み
+
+        new three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__.OBJLoader(manager).setMaterials(materials) // マテリアルの指定
+        .load('/assets/images/10778_Toilet_V2.obj', // ロード完了時の処理
+        function (object) {
+          stage.scene.add(object);
+          console.log('読み込み完了', object);
+          object.position.x = 0;
+          object.position.y = 0;
+          object.position.z = 30;
+        });
+      });
+    }
+  }, {
+    key: "_render",
+    value: function _render() {//
+    }
+  }, {
+    key: "onResize",
+    value: function onResize() {//
+    }
+  }, {
+    key: "onRaf",
+    value: function onRaf() {
+      this._render();
+    }
+  }]);
+
+  return Object;
+}();
+
+
 
 /***/ }),
 
@@ -179,7 +263,7 @@ var Stage = /*#__PURE__*/function () {
       lookAt: new three__WEBPACK_IMPORTED_MODULE_2__.Vector3(0, 0, 0),
       x: 0,
       y: 0,
-      z: 1.0
+      z: 100.0
     };
     this.scene = null;
     this.camera = null;
@@ -232,6 +316,12 @@ var Stage = /*#__PURE__*/function () {
       this.camera.fov = this.cameraParam.fov;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(windowWidth, windowHeight);
+      var directionalLight = new three__WEBPACK_IMPORTED_MODULE_2__.DirectionalLight(0xffffff);
+      directionalLight.position.set(-1, 1, 1).normalize();
+      this.scene.add(directionalLight);
+      var ambientLight = new three__WEBPACK_IMPORTED_MODULE_2__.AmbientLight(0xffffff);
+      ambientLight.intensity = 0.5;
+      this.scene.add(ambientLight);
     }
   }, {
     key: "_setDev",

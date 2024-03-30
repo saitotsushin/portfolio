@@ -1,4 +1,4 @@
-import { Scene, PerspectiveCamera, WebGLRenderer, Vector3, GridHelper, AxesHelper, Color } from 'three'
+import { Scene, PerspectiveCamera, WebGLRenderer, Vector3, GridHelper, AxesHelper, Color ,AmbientLight,DirectionalLight} from 'three'
 import Stats from 'stats-js';
 import OrbitControls from "three-orbitcontrols";
 
@@ -16,7 +16,7 @@ export default class Stage {
       lookAt: new Vector3(0, 0, 0),
       x: 0,
       y: 0,
-      z: 1.0,
+      z: 100.0,
     };
 
     this.scene = null;
@@ -74,6 +74,14 @@ export default class Stage {
 
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(windowWidth, windowHeight);
+
+    const directionalLight = new DirectionalLight(0xffffff);
+    directionalLight.position.set(-1, 1, 1).normalize();
+    this.scene.add(directionalLight);
+
+    const ambientLight = new AmbientLight(0xffffff);
+    ambientLight.intensity = 0.5;
+    this.scene.add(ambientLight);
   }
 
   _setDev() {

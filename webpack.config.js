@@ -117,14 +117,6 @@ const config = {
                 }
             ]
         }),
-        new ImageminWebpWebpackPlugin({
-            config: [{
-                test: /\.(jpe?g|png)$/i,
-                options: {
-                    quality: 60
-                },
-            }],
-        }),
         new MiniCssExtractPlugin({
             filename: 'stylesheets/[name].css'
         }),

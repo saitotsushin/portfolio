@@ -59169,6 +59169,1774 @@ if ( typeof window !== 'undefined' ) {
 
 
 
+/***/ }),
+
+/***/ "./node_modules/three/examples/jsm/loaders/DDSLoader.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/three/examples/jsm/loaders/DDSLoader.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DDSLoader": () => (/* binding */ DDSLoader)
+/* harmony export */ });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
+class DDSLoader extends three__WEBPACK_IMPORTED_MODULE_0__.CompressedTextureLoader {
+
+	constructor( manager ) {
+
+		super( manager );
+
+	}
+
+	parse( buffer, loadMipmaps ) {
+
+		const dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
+
+		// Adapted from @toji's DDS utils
+		// https://github.com/toji/webgl-texture-utils/blob/master/texture-util/dds.js
+
+		// All values and structures referenced from:
+		// http://msdn.microsoft.com/en-us/library/bb943991.aspx/
+
+		const DDS_MAGIC = 0x20534444;
+
+		// let DDSD_CAPS = 0x1;
+		// let DDSD_HEIGHT = 0x2;
+		// let DDSD_WIDTH = 0x4;
+		// let DDSD_PITCH = 0x8;
+		// let DDSD_PIXELFORMAT = 0x1000;
+		const DDSD_MIPMAPCOUNT = 0x20000;
+		// let DDSD_LINEARSIZE = 0x80000;
+		// let DDSD_DEPTH = 0x800000;
+
+		// let DDSCAPS_COMPLEX = 0x8;
+		// let DDSCAPS_MIPMAP = 0x400000;
+		// let DDSCAPS_TEXTURE = 0x1000;
+
+		const DDSCAPS2_CUBEMAP = 0x200;
+		const DDSCAPS2_CUBEMAP_POSITIVEX = 0x400;
+		const DDSCAPS2_CUBEMAP_NEGATIVEX = 0x800;
+		const DDSCAPS2_CUBEMAP_POSITIVEY = 0x1000;
+		const DDSCAPS2_CUBEMAP_NEGATIVEY = 0x2000;
+		const DDSCAPS2_CUBEMAP_POSITIVEZ = 0x4000;
+		const DDSCAPS2_CUBEMAP_NEGATIVEZ = 0x8000;
+		// let DDSCAPS2_VOLUME = 0x200000;
+
+		// let DDPF_ALPHAPIXELS = 0x1;
+		// let DDPF_ALPHA = 0x2;
+		const DDPF_FOURCC = 0x4;
+		// let DDPF_RGB = 0x40;
+		// let DDPF_YUV = 0x200;
+		// let DDPF_LUMINANCE = 0x20000;
+
+		function fourCCToInt32( value ) {
+
+			return value.charCodeAt( 0 ) +
+				( value.charCodeAt( 1 ) << 8 ) +
+				( value.charCodeAt( 2 ) << 16 ) +
+				( value.charCodeAt( 3 ) << 24 );
+
+		}
+
+		function int32ToFourCC( value ) {
+
+			return String.fromCharCode(
+				value & 0xff,
+				( value >> 8 ) & 0xff,
+				( value >> 16 ) & 0xff,
+				( value >> 24 ) & 0xff
+			);
+
+		}
+
+		function loadARGBMip( buffer, dataOffset, width, height ) {
+
+			const dataLength = width * height * 4;
+			const srcBuffer = new Uint8Array( buffer, dataOffset, dataLength );
+			const byteArray = new Uint8Array( dataLength );
+			let dst = 0;
+			let src = 0;
+			for ( let y = 0; y < height; y ++ ) {
+
+				for ( let x = 0; x < width; x ++ ) {
+
+					const b = srcBuffer[ src ]; src ++;
+					const g = srcBuffer[ src ]; src ++;
+					const r = srcBuffer[ src ]; src ++;
+					const a = srcBuffer[ src ]; src ++;
+					byteArray[ dst ] = r; dst ++;	//r
+					byteArray[ dst ] = g; dst ++;	//g
+					byteArray[ dst ] = b; dst ++;	//b
+					byteArray[ dst ] = a; dst ++;	//a
+
+				}
+
+			}
+
+			return byteArray;
+
+		}
+
+		const FOURCC_DXT1 = fourCCToInt32( 'DXT1' );
+		const FOURCC_DXT3 = fourCCToInt32( 'DXT3' );
+		const FOURCC_DXT5 = fourCCToInt32( 'DXT5' );
+		const FOURCC_ETC1 = fourCCToInt32( 'ETC1' );
+
+		const headerLengthInt = 31; // The header length in 32 bit ints
+
+		// Offsets into the header array
+
+		const off_magic = 0;
+
+		const off_size = 1;
+		const off_flags = 2;
+		const off_height = 3;
+		const off_width = 4;
+
+		const off_mipmapCount = 7;
+
+		const off_pfFlags = 20;
+		const off_pfFourCC = 21;
+		const off_RGBBitCount = 22;
+		const off_RBitMask = 23;
+		const off_GBitMask = 24;
+		const off_BBitMask = 25;
+		const off_ABitMask = 26;
+
+		// let off_caps = 27;
+		const off_caps2 = 28;
+		// let off_caps3 = 29;
+		// let off_caps4 = 30;
+
+		// Parse header
+
+		const header = new Int32Array( buffer, 0, headerLengthInt );
+
+		if ( header[ off_magic ] !== DDS_MAGIC ) {
+
+			console.error( 'THREE.DDSLoader.parse: Invalid magic number in DDS header.' );
+			return dds;
+
+		}
+
+		if ( ! header[ off_pfFlags ] & DDPF_FOURCC ) {
+
+			console.error( 'THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.' );
+			return dds;
+
+		}
+
+		let blockBytes;
+
+		const fourCC = header[ off_pfFourCC ];
+
+		let isRGBAUncompressed = false;
+
+		switch ( fourCC ) {
+
+			case FOURCC_DXT1:
+
+				blockBytes = 8;
+				dds.format = three__WEBPACK_IMPORTED_MODULE_0__.RGB_S3TC_DXT1_Format;
+				break;
+
+			case FOURCC_DXT3:
+
+				blockBytes = 16;
+				dds.format = three__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT3_Format;
+				break;
+
+			case FOURCC_DXT5:
+
+				blockBytes = 16;
+				dds.format = three__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT5_Format;
+				break;
+
+			case FOURCC_ETC1:
+
+				blockBytes = 8;
+				dds.format = three__WEBPACK_IMPORTED_MODULE_0__.RGB_ETC1_Format;
+				break;
+
+			default:
+
+				if ( header[ off_RGBBitCount ] === 32
+					&& header[ off_RBitMask ] & 0xff0000
+					&& header[ off_GBitMask ] & 0xff00
+					&& header[ off_BBitMask ] & 0xff
+					&& header[ off_ABitMask ] & 0xff000000 ) {
+
+					isRGBAUncompressed = true;
+					blockBytes = 64;
+					dds.format = three__WEBPACK_IMPORTED_MODULE_0__.RGBAFormat;
+
+				} else {
+
+					console.error( 'THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC( fourCC ) );
+					return dds;
+
+				}
+
+		}
+
+		dds.mipmapCount = 1;
+
+		if ( header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false ) {
+
+			dds.mipmapCount = Math.max( 1, header[ off_mipmapCount ] );
+
+		}
+
+		const caps2 = header[ off_caps2 ];
+		dds.isCubemap = caps2 & DDSCAPS2_CUBEMAP ? true : false;
+		if ( dds.isCubemap && (
+			! ( caps2 & DDSCAPS2_CUBEMAP_POSITIVEX ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_NEGATIVEX ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_POSITIVEY ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_NEGATIVEY ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_POSITIVEZ ) ||
+			! ( caps2 & DDSCAPS2_CUBEMAP_NEGATIVEZ )
+		) ) {
+
+			console.error( 'THREE.DDSLoader.parse: Incomplete cubemap faces' );
+			return dds;
+
+		}
+
+		dds.width = header[ off_width ];
+		dds.height = header[ off_height ];
+
+		let dataOffset = header[ off_size ] + 4;
+
+		// Extract mipmaps buffers
+
+		const faces = dds.isCubemap ? 6 : 1;
+
+		for ( let face = 0; face < faces; face ++ ) {
+
+			let width = dds.width;
+			let height = dds.height;
+
+			for ( let i = 0; i < dds.mipmapCount; i ++ ) {
+
+				let byteArray, dataLength;
+
+				if ( isRGBAUncompressed ) {
+
+					byteArray = loadARGBMip( buffer, dataOffset, width, height );
+					dataLength = byteArray.length;
+
+				} else {
+
+					dataLength = Math.max( 4, width ) / 4 * Math.max( 4, height ) / 4 * blockBytes;
+					byteArray = new Uint8Array( buffer, dataOffset, dataLength );
+
+				}
+
+				const mipmap = { 'data': byteArray, 'width': width, 'height': height };
+				dds.mipmaps.push( mipmap );
+
+				dataOffset += dataLength;
+
+				width = Math.max( width >> 1, 1 );
+				height = Math.max( height >> 1, 1 );
+
+			}
+
+		}
+
+		return dds;
+
+	}
+
+}
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/three/examples/jsm/loaders/MTLLoader.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/three/examples/jsm/loaders/MTLLoader.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MTLLoader": () => (/* binding */ MTLLoader)
+/* harmony export */ });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
+/**
+ * Loads a Wavefront .mtl file specifying materials
+ */
+
+class MTLLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
+
+	constructor( manager ) {
+
+		super( manager );
+
+	}
+
+	/**
+	 * Loads and parses a MTL asset from a URL.
+	 *
+	 * @param {String} url - URL to the MTL file.
+	 * @param {Function} [onLoad] - Callback invoked with the loaded object.
+	 * @param {Function} [onProgress] - Callback for download progress.
+	 * @param {Function} [onError] - Callback for download errors.
+	 *
+	 * @see setPath setResourcePath
+	 *
+	 * @note In order for relative texture references to resolve correctly
+	 * you must call setResourcePath() explicitly prior to load.
+	 */
+	load( url, onLoad, onProgress, onError ) {
+
+		const scope = this;
+
+		const path = ( this.path === '' ) ? three__WEBPACK_IMPORTED_MODULE_0__.LoaderUtils.extractUrlBase( url ) : this.path;
+
+		const loader = new three__WEBPACK_IMPORTED_MODULE_0__.FileLoader( this.manager );
+		loader.setPath( this.path );
+		loader.setRequestHeader( this.requestHeader );
+		loader.setWithCredentials( this.withCredentials );
+		loader.load( url, function ( text ) {
+
+			try {
+
+				onLoad( scope.parse( text, path ) );
+
+			} catch ( e ) {
+
+				if ( onError ) {
+
+					onError( e );
+
+				} else {
+
+					console.error( e );
+
+				}
+
+				scope.manager.itemError( url );
+
+			}
+
+		}, onProgress, onError );
+
+	}
+
+	setMaterialOptions( value ) {
+
+		this.materialOptions = value;
+		return this;
+
+	}
+
+	/**
+	 * Parses a MTL file.
+	 *
+	 * @param {String} text - Content of MTL file
+	 * @return {MaterialCreator}
+	 *
+	 * @see setPath setResourcePath
+	 *
+	 * @note In order for relative texture references to resolve correctly
+	 * you must call setResourcePath() explicitly prior to parse.
+	 */
+	parse( text, path ) {
+
+		const lines = text.split( '\n' );
+		let info = {};
+		const delimiter_pattern = /\s+/;
+		const materialsInfo = {};
+
+		for ( let i = 0; i < lines.length; i ++ ) {
+
+			let line = lines[ i ];
+			line = line.trim();
+
+			if ( line.length === 0 || line.charAt( 0 ) === '#' ) {
+
+				// Blank line or comment ignore
+				continue;
+
+			}
+
+			const pos = line.indexOf( ' ' );
+
+			let key = ( pos >= 0 ) ? line.substring( 0, pos ) : line;
+			key = key.toLowerCase();
+
+			let value = ( pos >= 0 ) ? line.substring( pos + 1 ) : '';
+			value = value.trim();
+
+			if ( key === 'newmtl' ) {
+
+				// New material
+
+				info = { name: value };
+				materialsInfo[ value ] = info;
+
+			} else {
+
+				if ( key === 'ka' || key === 'kd' || key === 'ks' || key === 'ke' ) {
+
+					const ss = value.split( delimiter_pattern, 3 );
+					info[ key ] = [ parseFloat( ss[ 0 ] ), parseFloat( ss[ 1 ] ), parseFloat( ss[ 2 ] ) ];
+
+				} else {
+
+					info[ key ] = value;
+
+				}
+
+			}
+
+		}
+
+		const materialCreator = new MaterialCreator( this.resourcePath || path, this.materialOptions );
+		materialCreator.setCrossOrigin( this.crossOrigin );
+		materialCreator.setManager( this.manager );
+		materialCreator.setMaterials( materialsInfo );
+		return materialCreator;
+
+	}
+
+}
+
+/**
+ * Create a new MTLLoader.MaterialCreator
+ * @param baseUrl - Url relative to which textures are loaded
+ * @param options - Set of options on how to construct the materials
+ *                  side: Which side to apply the material
+ *                        FrontSide (default), THREE.BackSide, THREE.DoubleSide
+ *                  wrap: What type of wrapping to apply for textures
+ *                        RepeatWrapping (default), THREE.ClampToEdgeWrapping, THREE.MirroredRepeatWrapping
+ *                  normalizeRGB: RGBs need to be normalized to 0-1 from 0-255
+ *                                Default: false, assumed to be already normalized
+ *                  ignoreZeroRGBs: Ignore values of RGBs (Ka,Kd,Ks) that are all 0's
+ *                                  Default: false
+ * @constructor
+ */
+
+class MaterialCreator {
+
+	constructor( baseUrl = '', options = {} ) {
+
+		this.baseUrl = baseUrl;
+		this.options = options;
+		this.materialsInfo = {};
+		this.materials = {};
+		this.materialsArray = [];
+		this.nameLookup = {};
+
+		this.crossOrigin = 'anonymous';
+
+		this.side = ( this.options.side !== undefined ) ? this.options.side : three__WEBPACK_IMPORTED_MODULE_0__.FrontSide;
+		this.wrap = ( this.options.wrap !== undefined ) ? this.options.wrap : three__WEBPACK_IMPORTED_MODULE_0__.RepeatWrapping;
+
+	}
+
+	setCrossOrigin( value ) {
+
+		this.crossOrigin = value;
+		return this;
+
+	}
+
+	setManager( value ) {
+
+		this.manager = value;
+
+	}
+
+	setMaterials( materialsInfo ) {
+
+		this.materialsInfo = this.convert( materialsInfo );
+		this.materials = {};
+		this.materialsArray = [];
+		this.nameLookup = {};
+
+	}
+
+	convert( materialsInfo ) {
+
+		if ( ! this.options ) return materialsInfo;
+
+		const converted = {};
+
+		for ( const mn in materialsInfo ) {
+
+			// Convert materials info into normalized form based on options
+
+			const mat = materialsInfo[ mn ];
+
+			const covmat = {};
+
+			converted[ mn ] = covmat;
+
+			for ( const prop in mat ) {
+
+				let save = true;
+				let value = mat[ prop ];
+				const lprop = prop.toLowerCase();
+
+				switch ( lprop ) {
+
+					case 'kd':
+					case 'ka':
+					case 'ks':
+
+						// Diffuse color (color under white light) using RGB values
+
+						if ( this.options && this.options.normalizeRGB ) {
+
+							value = [ value[ 0 ] / 255, value[ 1 ] / 255, value[ 2 ] / 255 ];
+
+						}
+
+						if ( this.options && this.options.ignoreZeroRGBs ) {
+
+							if ( value[ 0 ] === 0 && value[ 1 ] === 0 && value[ 2 ] === 0 ) {
+
+								// ignore
+
+								save = false;
+
+							}
+
+						}
+
+						break;
+
+					default:
+
+						break;
+
+				}
+
+				if ( save ) {
+
+					covmat[ lprop ] = value;
+
+				}
+
+			}
+
+		}
+
+		return converted;
+
+	}
+
+	preload() {
+
+		for ( const mn in this.materialsInfo ) {
+
+			this.create( mn );
+
+		}
+
+	}
+
+	getIndex( materialName ) {
+
+		return this.nameLookup[ materialName ];
+
+	}
+
+	getAsArray() {
+
+		let index = 0;
+
+		for ( const mn in this.materialsInfo ) {
+
+			this.materialsArray[ index ] = this.create( mn );
+			this.nameLookup[ mn ] = index;
+			index ++;
+
+		}
+
+		return this.materialsArray;
+
+	}
+
+	create( materialName ) {
+
+		if ( this.materials[ materialName ] === undefined ) {
+
+			this.createMaterial_( materialName );
+
+		}
+
+		return this.materials[ materialName ];
+
+	}
+
+	createMaterial_( materialName ) {
+
+		// Create material
+
+		const scope = this;
+		const mat = this.materialsInfo[ materialName ];
+		const params = {
+
+			name: materialName,
+			side: this.side
+
+		};
+
+		function resolveURL( baseUrl, url ) {
+
+			if ( typeof url !== 'string' || url === '' )
+				return '';
+
+			// Absolute URL
+			if ( /^https?:\/\//i.test( url ) ) return url;
+
+			return baseUrl + url;
+
+		}
+
+		function setMapForType( mapType, value ) {
+
+			if ( params[ mapType ] ) return; // Keep the first encountered texture
+
+			const texParams = scope.getTextureParams( value, params );
+			const map = scope.loadTexture( resolveURL( scope.baseUrl, texParams.url ) );
+
+			map.repeat.copy( texParams.scale );
+			map.offset.copy( texParams.offset );
+
+			map.wrapS = scope.wrap;
+			map.wrapT = scope.wrap;
+
+			params[ mapType ] = map;
+
+		}
+
+		for ( const prop in mat ) {
+
+			const value = mat[ prop ];
+			let n;
+
+			if ( value === '' ) continue;
+
+			switch ( prop.toLowerCase() ) {
+
+				// Ns is material specular exponent
+
+				case 'kd':
+
+					// Diffuse color (color under white light) using RGB values
+
+					params.color = new three__WEBPACK_IMPORTED_MODULE_0__.Color().fromArray( value );
+
+					break;
+
+				case 'ks':
+
+					// Specular color (color when light is reflected from shiny surface) using RGB values
+					params.specular = new three__WEBPACK_IMPORTED_MODULE_0__.Color().fromArray( value );
+
+					break;
+
+				case 'ke':
+
+					// Emissive using RGB values
+					params.emissive = new three__WEBPACK_IMPORTED_MODULE_0__.Color().fromArray( value );
+
+					break;
+
+				case 'map_kd':
+
+					// Diffuse texture map
+
+					setMapForType( 'map', value );
+
+					break;
+
+				case 'map_ks':
+
+					// Specular map
+
+					setMapForType( 'specularMap', value );
+
+					break;
+
+				case 'map_ke':
+
+					// Emissive map
+
+					setMapForType( 'emissiveMap', value );
+
+					break;
+
+				case 'norm':
+
+					setMapForType( 'normalMap', value );
+
+					break;
+
+				case 'map_bump':
+				case 'bump':
+
+					// Bump texture map
+
+					setMapForType( 'bumpMap', value );
+
+					break;
+
+				case 'map_d':
+
+					// Alpha map
+
+					setMapForType( 'alphaMap', value );
+					params.transparent = true;
+
+					break;
+
+				case 'ns':
+
+					// The specular exponent (defines the focus of the specular highlight)
+					// A high exponent results in a tight, concentrated highlight. Ns values normally range from 0 to 1000.
+
+					params.shininess = parseFloat( value );
+
+					break;
+
+				case 'd':
+					n = parseFloat( value );
+
+					if ( n < 1 ) {
+
+						params.opacity = n;
+						params.transparent = true;
+
+					}
+
+					break;
+
+				case 'tr':
+					n = parseFloat( value );
+
+					if ( this.options && this.options.invertTrProperty ) n = 1 - n;
+
+					if ( n > 0 ) {
+
+						params.opacity = 1 - n;
+						params.transparent = true;
+
+					}
+
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		this.materials[ materialName ] = new three__WEBPACK_IMPORTED_MODULE_0__.MeshPhongMaterial( params );
+		return this.materials[ materialName ];
+
+	}
+
+	getTextureParams( value, matParams ) {
+
+		const texParams = {
+
+			scale: new three__WEBPACK_IMPORTED_MODULE_0__.Vector2( 1, 1 ),
+			offset: new three__WEBPACK_IMPORTED_MODULE_0__.Vector2( 0, 0 )
+
+		 };
+
+		const items = value.split( /\s+/ );
+		let pos;
+
+		pos = items.indexOf( '-bm' );
+
+		if ( pos >= 0 ) {
+
+			matParams.bumpScale = parseFloat( items[ pos + 1 ] );
+			items.splice( pos, 2 );
+
+		}
+
+		pos = items.indexOf( '-s' );
+
+		if ( pos >= 0 ) {
+
+			texParams.scale.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
+			items.splice( pos, 4 ); // we expect 3 parameters here!
+
+		}
+
+		pos = items.indexOf( '-o' );
+
+		if ( pos >= 0 ) {
+
+			texParams.offset.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
+			items.splice( pos, 4 ); // we expect 3 parameters here!
+
+		}
+
+		texParams.url = items.join( ' ' ).trim();
+		return texParams;
+
+	}
+
+	loadTexture( url, mapping, onLoad, onProgress, onError ) {
+
+		const manager = ( this.manager !== undefined ) ? this.manager : three__WEBPACK_IMPORTED_MODULE_0__.DefaultLoadingManager;
+		let loader = manager.getHandler( url );
+
+		if ( loader === null ) {
+
+			loader = new three__WEBPACK_IMPORTED_MODULE_0__.TextureLoader( manager );
+
+		}
+
+		if ( loader.setCrossOrigin ) loader.setCrossOrigin( this.crossOrigin );
+
+		const texture = loader.load( url, onLoad, onProgress, onError );
+
+		if ( mapping !== undefined ) texture.mapping = mapping;
+
+		return texture;
+
+	}
+
+}
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/three/examples/jsm/loaders/OBJLoader.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/three/examples/jsm/loaders/OBJLoader.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "OBJLoader": () => (/* binding */ OBJLoader)
+/* harmony export */ });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
+// o object_name | g group_name
+const _object_pattern = /^[og]\s*(.+)?/;
+// mtllib file_reference
+const _material_library_pattern = /^mtllib /;
+// usemtl material_name
+const _material_use_pattern = /^usemtl /;
+// usemap map_name
+const _map_use_pattern = /^usemap /;
+
+const _vA = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+const _vB = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+const _vC = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+
+const _ab = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+const _cb = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+
+function ParserState() {
+
+	const state = {
+		objects: [],
+		object: {},
+
+		vertices: [],
+		normals: [],
+		colors: [],
+		uvs: [],
+
+		materials: {},
+		materialLibraries: [],
+
+		startObject: function ( name, fromDeclaration ) {
+
+			// If the current object (initial from reset) is not from a g/o declaration in the parsed
+			// file. We need to use it for the first parsed g/o to keep things in sync.
+			if ( this.object && this.object.fromDeclaration === false ) {
+
+				this.object.name = name;
+				this.object.fromDeclaration = ( fromDeclaration !== false );
+				return;
+
+			}
+
+			const previousMaterial = ( this.object && typeof this.object.currentMaterial === 'function' ? this.object.currentMaterial() : undefined );
+
+			if ( this.object && typeof this.object._finalize === 'function' ) {
+
+				this.object._finalize( true );
+
+			}
+
+			this.object = {
+				name: name || '',
+				fromDeclaration: ( fromDeclaration !== false ),
+
+				geometry: {
+					vertices: [],
+					normals: [],
+					colors: [],
+					uvs: [],
+					hasUVIndices: false
+				},
+				materials: [],
+				smooth: true,
+
+				startMaterial: function ( name, libraries ) {
+
+					const previous = this._finalize( false );
+
+					// New usemtl declaration overwrites an inherited material, except if faces were declared
+					// after the material, then it must be preserved for proper MultiMaterial continuation.
+					if ( previous && ( previous.inherited || previous.groupCount <= 0 ) ) {
+
+						this.materials.splice( previous.index, 1 );
+
+					}
+
+					const material = {
+						index: this.materials.length,
+						name: name || '',
+						mtllib: ( Array.isArray( libraries ) && libraries.length > 0 ? libraries[ libraries.length - 1 ] : '' ),
+						smooth: ( previous !== undefined ? previous.smooth : this.smooth ),
+						groupStart: ( previous !== undefined ? previous.groupEnd : 0 ),
+						groupEnd: - 1,
+						groupCount: - 1,
+						inherited: false,
+
+						clone: function ( index ) {
+
+							const cloned = {
+								index: ( typeof index === 'number' ? index : this.index ),
+								name: this.name,
+								mtllib: this.mtllib,
+								smooth: this.smooth,
+								groupStart: 0,
+								groupEnd: - 1,
+								groupCount: - 1,
+								inherited: false
+							};
+							cloned.clone = this.clone.bind( cloned );
+							return cloned;
+
+						}
+					};
+
+					this.materials.push( material );
+
+					return material;
+
+				},
+
+				currentMaterial: function () {
+
+					if ( this.materials.length > 0 ) {
+
+						return this.materials[ this.materials.length - 1 ];
+
+					}
+
+					return undefined;
+
+				},
+
+				_finalize: function ( end ) {
+
+					const lastMultiMaterial = this.currentMaterial();
+					if ( lastMultiMaterial && lastMultiMaterial.groupEnd === - 1 ) {
+
+						lastMultiMaterial.groupEnd = this.geometry.vertices.length / 3;
+						lastMultiMaterial.groupCount = lastMultiMaterial.groupEnd - lastMultiMaterial.groupStart;
+						lastMultiMaterial.inherited = false;
+
+					}
+
+					// Ignore objects tail materials if no face declarations followed them before a new o/g started.
+					if ( end && this.materials.length > 1 ) {
+
+						for ( let mi = this.materials.length - 1; mi >= 0; mi -- ) {
+
+							if ( this.materials[ mi ].groupCount <= 0 ) {
+
+								this.materials.splice( mi, 1 );
+
+							}
+
+						}
+
+					}
+
+					// Guarantee at least one empty material, this makes the creation later more straight forward.
+					if ( end && this.materials.length === 0 ) {
+
+						this.materials.push( {
+							name: '',
+							smooth: this.smooth
+						} );
+
+					}
+
+					return lastMultiMaterial;
+
+				}
+			};
+
+			// Inherit previous objects material.
+			// Spec tells us that a declared material must be set to all objects until a new material is declared.
+			// If a usemtl declaration is encountered while this new object is being parsed, it will
+			// overwrite the inherited material. Exception being that there was already face declarations
+			// to the inherited material, then it will be preserved for proper MultiMaterial continuation.
+
+			if ( previousMaterial && previousMaterial.name && typeof previousMaterial.clone === 'function' ) {
+
+				const declared = previousMaterial.clone( 0 );
+				declared.inherited = true;
+				this.object.materials.push( declared );
+
+			}
+
+			this.objects.push( this.object );
+
+		},
+
+		finalize: function () {
+
+			if ( this.object && typeof this.object._finalize === 'function' ) {
+
+				this.object._finalize( true );
+
+			}
+
+		},
+
+		parseVertexIndex: function ( value, len ) {
+
+			const index = parseInt( value, 10 );
+			return ( index >= 0 ? index - 1 : index + len / 3 ) * 3;
+
+		},
+
+		parseNormalIndex: function ( value, len ) {
+
+			const index = parseInt( value, 10 );
+			return ( index >= 0 ? index - 1 : index + len / 3 ) * 3;
+
+		},
+
+		parseUVIndex: function ( value, len ) {
+
+			const index = parseInt( value, 10 );
+			return ( index >= 0 ? index - 1 : index + len / 2 ) * 2;
+
+		},
+
+		addVertex: function ( a, b, c ) {
+
+			const src = this.vertices;
+			const dst = this.object.geometry.vertices;
+
+			dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+			dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
+			dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
+
+		},
+
+		addVertexPoint: function ( a ) {
+
+			const src = this.vertices;
+			const dst = this.object.geometry.vertices;
+
+			dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+
+		},
+
+		addVertexLine: function ( a ) {
+
+			const src = this.vertices;
+			const dst = this.object.geometry.vertices;
+
+			dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+
+		},
+
+		addNormal: function ( a, b, c ) {
+
+			const src = this.normals;
+			const dst = this.object.geometry.normals;
+
+			dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+			dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
+			dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
+
+		},
+
+		addFaceNormal: function ( a, b, c ) {
+
+			const src = this.vertices;
+			const dst = this.object.geometry.normals;
+
+			_vA.fromArray( src, a );
+			_vB.fromArray( src, b );
+			_vC.fromArray( src, c );
+
+			_cb.subVectors( _vC, _vB );
+			_ab.subVectors( _vA, _vB );
+			_cb.cross( _ab );
+
+			_cb.normalize();
+
+			dst.push( _cb.x, _cb.y, _cb.z );
+			dst.push( _cb.x, _cb.y, _cb.z );
+			dst.push( _cb.x, _cb.y, _cb.z );
+
+		},
+
+		addColor: function ( a, b, c ) {
+
+			const src = this.colors;
+			const dst = this.object.geometry.colors;
+
+			if ( src[ a ] !== undefined ) dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+			if ( src[ b ] !== undefined ) dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
+			if ( src[ c ] !== undefined ) dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
+
+		},
+
+		addUV: function ( a, b, c ) {
+
+			const src = this.uvs;
+			const dst = this.object.geometry.uvs;
+
+			dst.push( src[ a + 0 ], src[ a + 1 ] );
+			dst.push( src[ b + 0 ], src[ b + 1 ] );
+			dst.push( src[ c + 0 ], src[ c + 1 ] );
+
+		},
+
+		addDefaultUV: function () {
+
+			const dst = this.object.geometry.uvs;
+
+			dst.push( 0, 0 );
+			dst.push( 0, 0 );
+			dst.push( 0, 0 );
+
+		},
+
+		addUVLine: function ( a ) {
+
+			const src = this.uvs;
+			const dst = this.object.geometry.uvs;
+
+			dst.push( src[ a + 0 ], src[ a + 1 ] );
+
+		},
+
+		addFace: function ( a, b, c, ua, ub, uc, na, nb, nc ) {
+
+			const vLen = this.vertices.length;
+
+			let ia = this.parseVertexIndex( a, vLen );
+			let ib = this.parseVertexIndex( b, vLen );
+			let ic = this.parseVertexIndex( c, vLen );
+
+			this.addVertex( ia, ib, ic );
+			this.addColor( ia, ib, ic );
+
+			// normals
+
+			if ( na !== undefined && na !== '' ) {
+
+				const nLen = this.normals.length;
+
+				ia = this.parseNormalIndex( na, nLen );
+				ib = this.parseNormalIndex( nb, nLen );
+				ic = this.parseNormalIndex( nc, nLen );
+
+				this.addNormal( ia, ib, ic );
+
+			} else {
+
+				this.addFaceNormal( ia, ib, ic );
+
+			}
+
+			// uvs
+
+			if ( ua !== undefined && ua !== '' ) {
+
+				const uvLen = this.uvs.length;
+
+				ia = this.parseUVIndex( ua, uvLen );
+				ib = this.parseUVIndex( ub, uvLen );
+				ic = this.parseUVIndex( uc, uvLen );
+
+				this.addUV( ia, ib, ic );
+
+				this.object.geometry.hasUVIndices = true;
+
+			} else {
+
+				// add placeholder values (for inconsistent face definitions)
+
+				this.addDefaultUV();
+
+			}
+
+		},
+
+		addPointGeometry: function ( vertices ) {
+
+			this.object.geometry.type = 'Points';
+
+			const vLen = this.vertices.length;
+
+			for ( let vi = 0, l = vertices.length; vi < l; vi ++ ) {
+
+				const index = this.parseVertexIndex( vertices[ vi ], vLen );
+
+				this.addVertexPoint( index );
+				this.addColor( index );
+
+			}
+
+		},
+
+		addLineGeometry: function ( vertices, uvs ) {
+
+			this.object.geometry.type = 'Line';
+
+			const vLen = this.vertices.length;
+			const uvLen = this.uvs.length;
+
+			for ( let vi = 0, l = vertices.length; vi < l; vi ++ ) {
+
+				this.addVertexLine( this.parseVertexIndex( vertices[ vi ], vLen ) );
+
+			}
+
+			for ( let uvi = 0, l = uvs.length; uvi < l; uvi ++ ) {
+
+				this.addUVLine( this.parseUVIndex( uvs[ uvi ], uvLen ) );
+
+			}
+
+		}
+
+	};
+
+	state.startObject( '', false );
+
+	return state;
+
+}
+
+//
+
+class OBJLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
+
+	constructor( manager ) {
+
+		super( manager );
+
+		this.materials = null;
+
+	}
+
+	load( url, onLoad, onProgress, onError ) {
+
+		const scope = this;
+
+		const loader = new three__WEBPACK_IMPORTED_MODULE_0__.FileLoader( this.manager );
+		loader.setPath( this.path );
+		loader.setRequestHeader( this.requestHeader );
+		loader.setWithCredentials( this.withCredentials );
+		loader.load( url, function ( text ) {
+
+			try {
+
+				onLoad( scope.parse( text ) );
+
+			} catch ( e ) {
+
+				if ( onError ) {
+
+					onError( e );
+
+				} else {
+
+					console.error( e );
+
+				}
+
+				scope.manager.itemError( url );
+
+			}
+
+		}, onProgress, onError );
+
+	}
+
+	setMaterials( materials ) {
+
+		this.materials = materials;
+
+		return this;
+
+	}
+
+	parse( text ) {
+
+		const state = new ParserState();
+
+		if ( text.indexOf( '\r\n' ) !== - 1 ) {
+
+			// This is faster than String.split with regex that splits on both
+			text = text.replace( /\r\n/g, '\n' );
+
+		}
+
+		if ( text.indexOf( '\\\n' ) !== - 1 ) {
+
+			// join lines separated by a line continuation character (\)
+			text = text.replace( /\\\n/g, '' );
+
+		}
+
+		const lines = text.split( '\n' );
+		let line = '', lineFirstChar = '';
+		let lineLength = 0;
+		let result = [];
+
+		// Faster to just trim left side of the line. Use if available.
+		const trimLeft = ( typeof ''.trimLeft === 'function' );
+
+		for ( let i = 0, l = lines.length; i < l; i ++ ) {
+
+			line = lines[ i ];
+
+			line = trimLeft ? line.trimLeft() : line.trim();
+
+			lineLength = line.length;
+
+			if ( lineLength === 0 ) continue;
+
+			lineFirstChar = line.charAt( 0 );
+
+			// @todo invoke passed in handler if any
+			if ( lineFirstChar === '#' ) continue;
+
+			if ( lineFirstChar === 'v' ) {
+
+				const data = line.split( /\s+/ );
+
+				switch ( data[ 0 ] ) {
+
+					case 'v':
+						state.vertices.push(
+							parseFloat( data[ 1 ] ),
+							parseFloat( data[ 2 ] ),
+							parseFloat( data[ 3 ] )
+						);
+						if ( data.length >= 7 ) {
+
+							state.colors.push(
+								parseFloat( data[ 4 ] ),
+								parseFloat( data[ 5 ] ),
+								parseFloat( data[ 6 ] )
+
+							);
+
+						} else {
+
+							// if no colors are defined, add placeholders so color and vertex indices match
+
+							state.colors.push( undefined, undefined, undefined );
+
+						}
+
+						break;
+					case 'vn':
+						state.normals.push(
+							parseFloat( data[ 1 ] ),
+							parseFloat( data[ 2 ] ),
+							parseFloat( data[ 3 ] )
+						);
+						break;
+					case 'vt':
+						state.uvs.push(
+							parseFloat( data[ 1 ] ),
+							parseFloat( data[ 2 ] )
+						);
+						break;
+
+				}
+
+			} else if ( lineFirstChar === 'f' ) {
+
+				const lineData = line.substr( 1 ).trim();
+				const vertexData = lineData.split( /\s+/ );
+				const faceVertices = [];
+
+				// Parse the face vertex data into an easy to work with format
+
+				for ( let j = 0, jl = vertexData.length; j < jl; j ++ ) {
+
+					const vertex = vertexData[ j ];
+
+					if ( vertex.length > 0 ) {
+
+						const vertexParts = vertex.split( '/' );
+						faceVertices.push( vertexParts );
+
+					}
+
+				}
+
+				// Draw an edge between the first vertex and all subsequent vertices to form an n-gon
+
+				const v1 = faceVertices[ 0 ];
+
+				for ( let j = 1, jl = faceVertices.length - 1; j < jl; j ++ ) {
+
+					const v2 = faceVertices[ j ];
+					const v3 = faceVertices[ j + 1 ];
+
+					state.addFace(
+						v1[ 0 ], v2[ 0 ], v3[ 0 ],
+						v1[ 1 ], v2[ 1 ], v3[ 1 ],
+						v1[ 2 ], v2[ 2 ], v3[ 2 ]
+					);
+
+				}
+
+			} else if ( lineFirstChar === 'l' ) {
+
+				const lineParts = line.substring( 1 ).trim().split( ' ' );
+				let lineVertices = [];
+				const lineUVs = [];
+
+				if ( line.indexOf( '/' ) === - 1 ) {
+
+					lineVertices = lineParts;
+
+				} else {
+
+					for ( let li = 0, llen = lineParts.length; li < llen; li ++ ) {
+
+						const parts = lineParts[ li ].split( '/' );
+
+						if ( parts[ 0 ] !== '' ) lineVertices.push( parts[ 0 ] );
+						if ( parts[ 1 ] !== '' ) lineUVs.push( parts[ 1 ] );
+
+					}
+
+				}
+
+				state.addLineGeometry( lineVertices, lineUVs );
+
+			} else if ( lineFirstChar === 'p' ) {
+
+				const lineData = line.substr( 1 ).trim();
+				const pointData = lineData.split( ' ' );
+
+				state.addPointGeometry( pointData );
+
+			} else if ( ( result = _object_pattern.exec( line ) ) !== null ) {
+
+				// o object_name
+				// or
+				// g group_name
+
+				// WORKAROUND: https://bugs.chromium.org/p/v8/issues/detail?id=2869
+				// let name = result[ 0 ].substr( 1 ).trim();
+				const name = ( ' ' + result[ 0 ].substr( 1 ).trim() ).substr( 1 );
+
+				state.startObject( name );
+
+			} else if ( _material_use_pattern.test( line ) ) {
+
+				// material
+
+				state.object.startMaterial( line.substring( 7 ).trim(), state.materialLibraries );
+
+			} else if ( _material_library_pattern.test( line ) ) {
+
+				// mtl file
+
+				state.materialLibraries.push( line.substring( 7 ).trim() );
+
+			} else if ( _map_use_pattern.test( line ) ) {
+
+				// the line is parsed but ignored since the loader assumes textures are defined MTL files
+				// (according to https://www.okino.com/conv/imp_wave.htm, 'usemap' is the old-style Wavefront texture reference method)
+
+				console.warn( 'THREE.OBJLoader: Rendering identifier "usemap" not supported. Textures must be defined in MTL files.' );
+
+			} else if ( lineFirstChar === 's' ) {
+
+				result = line.split( ' ' );
+
+				// smooth shading
+
+				// @todo Handle files that have varying smooth values for a set of faces inside one geometry,
+				// but does not define a usemtl for each face set.
+				// This should be detected and a dummy material created (later MultiMaterial and geometry groups).
+				// This requires some care to not create extra material on each smooth value for "normal" obj files.
+				// where explicit usemtl defines geometry groups.
+				// Example asset: examples/models/obj/cerberus/Cerberus.obj
+
+				/*
+					 * http://paulbourke.net/dataformats/obj/
+					 * or
+					 * http://www.cs.utah.edu/~boulos/cs3505/obj_spec.pdf
+					 *
+					 * From chapter "Grouping" Syntax explanation "s group_number":
+					 * "group_number is the smoothing group number. To turn off smoothing groups, use a value of 0 or off.
+					 * Polygonal elements use group numbers to put elements in different smoothing groups. For free-form
+					 * surfaces, smoothing groups are either turned on or off; there is no difference between values greater
+					 * than 0."
+					 */
+				if ( result.length > 1 ) {
+
+					const value = result[ 1 ].trim().toLowerCase();
+					state.object.smooth = ( value !== '0' && value !== 'off' );
+
+				} else {
+
+					// ZBrush can produce "s" lines #11707
+					state.object.smooth = true;
+
+				}
+
+				const material = state.object.currentMaterial();
+				if ( material ) material.smooth = state.object.smooth;
+
+			} else {
+
+				// Handle null terminated files without exception
+				if ( line === '\0' ) continue;
+
+				console.warn( 'THREE.OBJLoader: Unexpected line: "' + line + '"' );
+
+			}
+
+		}
+
+		state.finalize();
+
+		const container = new three__WEBPACK_IMPORTED_MODULE_0__.Group();
+		container.materialLibraries = [].concat( state.materialLibraries );
+
+		const hasPrimitives = ! ( state.objects.length === 1 && state.objects[ 0 ].geometry.vertices.length === 0 );
+
+		if ( hasPrimitives === true ) {
+
+			for ( let i = 0, l = state.objects.length; i < l; i ++ ) {
+
+				const object = state.objects[ i ];
+				const geometry = object.geometry;
+				const materials = object.materials;
+				const isLine = ( geometry.type === 'Line' );
+				const isPoints = ( geometry.type === 'Points' );
+				let hasVertexColors = false;
+
+				// Skip o/g line declarations that did not follow with any faces
+				if ( geometry.vertices.length === 0 ) continue;
+
+				const buffergeometry = new three__WEBPACK_IMPORTED_MODULE_0__.BufferGeometry();
+
+				buffergeometry.setAttribute( 'position', new three__WEBPACK_IMPORTED_MODULE_0__.Float32BufferAttribute( geometry.vertices, 3 ) );
+
+				if ( geometry.normals.length > 0 ) {
+
+					buffergeometry.setAttribute( 'normal', new three__WEBPACK_IMPORTED_MODULE_0__.Float32BufferAttribute( geometry.normals, 3 ) );
+
+				}
+
+				if ( geometry.colors.length > 0 ) {
+
+					hasVertexColors = true;
+					buffergeometry.setAttribute( 'color', new three__WEBPACK_IMPORTED_MODULE_0__.Float32BufferAttribute( geometry.colors, 3 ) );
+
+				}
+
+				if ( geometry.hasUVIndices === true ) {
+
+					buffergeometry.setAttribute( 'uv', new three__WEBPACK_IMPORTED_MODULE_0__.Float32BufferAttribute( geometry.uvs, 2 ) );
+
+				}
+
+				// Create materials
+
+				const createdMaterials = [];
+
+				for ( let mi = 0, miLen = materials.length; mi < miLen; mi ++ ) {
+
+					const sourceMaterial = materials[ mi ];
+					const materialHash = sourceMaterial.name + '_' + sourceMaterial.smooth + '_' + hasVertexColors;
+					let material = state.materials[ materialHash ];
+
+					if ( this.materials !== null ) {
+
+						material = this.materials.create( sourceMaterial.name );
+
+						// mtl etc. loaders probably can't create line materials correctly, copy properties to a line material.
+						if ( isLine && material && ! ( material instanceof three__WEBPACK_IMPORTED_MODULE_0__.LineBasicMaterial ) ) {
+
+							const materialLine = new three__WEBPACK_IMPORTED_MODULE_0__.LineBasicMaterial();
+							three__WEBPACK_IMPORTED_MODULE_0__.Material.prototype.copy.call( materialLine, material );
+							materialLine.color.copy( material.color );
+							material = materialLine;
+
+						} else if ( isPoints && material && ! ( material instanceof three__WEBPACK_IMPORTED_MODULE_0__.PointsMaterial ) ) {
+
+							const materialPoints = new three__WEBPACK_IMPORTED_MODULE_0__.PointsMaterial( { size: 10, sizeAttenuation: false } );
+							three__WEBPACK_IMPORTED_MODULE_0__.Material.prototype.copy.call( materialPoints, material );
+							materialPoints.color.copy( material.color );
+							materialPoints.map = material.map;
+							material = materialPoints;
+
+						}
+
+					}
+
+					if ( material === undefined ) {
+
+						if ( isLine ) {
+
+							material = new three__WEBPACK_IMPORTED_MODULE_0__.LineBasicMaterial();
+
+						} else if ( isPoints ) {
+
+							material = new three__WEBPACK_IMPORTED_MODULE_0__.PointsMaterial( { size: 1, sizeAttenuation: false } );
+
+						} else {
+
+							material = new three__WEBPACK_IMPORTED_MODULE_0__.MeshPhongMaterial();
+
+						}
+
+						material.name = sourceMaterial.name;
+						material.flatShading = sourceMaterial.smooth ? false : true;
+						material.vertexColors = hasVertexColors;
+
+						state.materials[ materialHash ] = material;
+
+					}
+
+					createdMaterials.push( material );
+
+				}
+
+				// Create mesh
+
+				let mesh;
+
+				if ( createdMaterials.length > 1 ) {
+
+					for ( let mi = 0, miLen = materials.length; mi < miLen; mi ++ ) {
+
+						const sourceMaterial = materials[ mi ];
+						buffergeometry.addGroup( sourceMaterial.groupStart, sourceMaterial.groupCount, mi );
+
+					}
+
+					if ( isLine ) {
+
+						mesh = new three__WEBPACK_IMPORTED_MODULE_0__.LineSegments( buffergeometry, createdMaterials );
+
+					} else if ( isPoints ) {
+
+						mesh = new three__WEBPACK_IMPORTED_MODULE_0__.Points( buffergeometry, createdMaterials );
+
+					} else {
+
+						mesh = new three__WEBPACK_IMPORTED_MODULE_0__.Mesh( buffergeometry, createdMaterials );
+
+					}
+
+				} else {
+
+					if ( isLine ) {
+
+						mesh = new three__WEBPACK_IMPORTED_MODULE_0__.LineSegments( buffergeometry, createdMaterials[ 0 ] );
+
+					} else if ( isPoints ) {
+
+						mesh = new three__WEBPACK_IMPORTED_MODULE_0__.Points( buffergeometry, createdMaterials[ 0 ] );
+
+					} else {
+
+						mesh = new three__WEBPACK_IMPORTED_MODULE_0__.Mesh( buffergeometry, createdMaterials[ 0 ] );
+
+					}
+
+				}
+
+				mesh.name = object.name;
+
+				container.add( mesh );
+
+			}
+
+		} else {
+
+			// if there is only the default parser state object with no geometry data, interpret data as point cloud
+
+			if ( state.vertices.length > 0 ) {
+
+				const material = new three__WEBPACK_IMPORTED_MODULE_0__.PointsMaterial( { size: 1, sizeAttenuation: false } );
+
+				const buffergeometry = new three__WEBPACK_IMPORTED_MODULE_0__.BufferGeometry();
+
+				buffergeometry.setAttribute( 'position', new three__WEBPACK_IMPORTED_MODULE_0__.Float32BufferAttribute( state.vertices, 3 ) );
+
+				if ( state.colors.length > 0 && state.colors[ 0 ] !== undefined ) {
+
+					buffergeometry.setAttribute( 'color', new three__WEBPACK_IMPORTED_MODULE_0__.Float32BufferAttribute( state.colors, 3 ) );
+					material.vertexColors = true;
+
+				}
+
+				const points = new three__WEBPACK_IMPORTED_MODULE_0__.Points( buffergeometry, material );
+				container.add( points );
+
+			}
+
+		}
+
+		return container;
+
+	}
+
+}
+
+
+
+
 /***/ })
 
 }]);
