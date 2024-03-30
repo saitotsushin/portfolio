@@ -19,7 +19,7 @@ export default class Object {
     
     // MTLファイルの読み込み
     new MTLLoader(manager).load(
-      '/assets/images/10778_Toilet_V2.mtl',
+      '../assets/images/10778_Toilet_V2.mtl',
       // ロード完了時の処理
       function (materials) {
         materials.preload();
@@ -27,7 +27,7 @@ export default class Object {
         new OBJLoader(manager)
           .setMaterials(materials) // マテリアルの指定
           .load(
-            '/assets/images/10778_Toilet_V2.obj', 
+            '../assets/images/10778_Toilet_V2.obj', 
             // ロード完了時の処理
             function (object) {
               stage.scene.add(object);

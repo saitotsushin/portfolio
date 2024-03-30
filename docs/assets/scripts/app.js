@@ -82,12 +82,12 @@ var _Object = /*#__PURE__*/function () {
       manager.addHandler(/\.dds$/i, new three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_2__.DDSLoader()); // DDSローダーの準備
       // MTLファイルの読み込み
 
-      new three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_1__.MTLLoader(manager).load('/assets/images/10778_Toilet_V2.mtl', // ロード完了時の処理
+      new three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_1__.MTLLoader(manager).load('../assets/images/10778_Toilet_V2.mtl', // ロード完了時の処理
       function (materials) {
         materials.preload(); // OBJファイルの読み込み
 
         new three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__.OBJLoader(manager).setMaterials(materials) // マテリアルの指定
-        .load('/assets/images/10778_Toilet_V2.obj', // ロード完了時の処理
+        .load('../assets/images/10778_Toilet_V2.obj', // ロード完了時の処理
         function (object) {
           stage.scene.add(object);
           console.log('読み込み完了', object);
