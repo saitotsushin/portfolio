@@ -1,6 +1,6 @@
 export default {
   root: 'src', /* srcフォルダをルートとしたビルド対象 */
-  base: '/',
+  base: '/portfolio/',
   publicDir: 'public',
   build: {
     outDir:"../dist", //プロジェクトルートからの相対パス(index.pugからの相対パス)
