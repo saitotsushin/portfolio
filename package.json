@@ -29,7 +29,7 @@
 >>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
     "raw-loader": "^4.0.0",
     "terser-webpack-plugin": "^2.3.2",
-    "three": "^0.112.1",
+    "three": "^0.125.0",
     "three-obj-mtl-loader": "^1.0.3",
     "webpack-glsl-loader": "^1.0.1",
     "webpack-obj-loader": "^1.0.4",
