@@ -76,3 +76,5 @@ Directory structure
 - brew update && brew upgrade opensslを叩く→ダメ→OpenSSLライブラリのアップデート
 未解決。
 `nodebrew use v16.1.0`バージョンを落として作業できた。
+* 参考
+https://liginc.co.jp/560646
