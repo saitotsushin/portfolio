@@ -17,12 +17,17 @@
     "node-sass": "4.13.0",
     "raw-loader": "^4.0.0",
     "terser-webpack-plugin": "^2.3.2",
+    "three": "^0.112.1",
     "three-obj-mtl-loader": "^1.0.3",
     "webpack-glsl-loader": "^1.0.1",
     "webpack-obj-loader": "^1.0.4",
-    "yui": "^3.18.1",
+    "yui": "^3.18.1"
+  },
+  "devDependencies": {
     "sass": "^1.72.0",
-    "vite": "^5.2.0",
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
     "@barba/core": "^2.9.7",
     "three": "^0.162.0"
   }
