@@ -20,8 +20,13 @@
   "license": "ISC",
   "dependencies": {
     "imports-loader": "^0.8.0",
+<<<<<<< HEAD
     "jquery": "^3.5.0",
     "node-sass": "4.13.0",
+=======
+    "jquery": "^3.3.1",
+    "node-sass": "4.13.1",
+>>>>>>> bf267a13ac746bace2d7478908bd056c5d609970
     "raw-loader": "^4.0.0",
     "terser-webpack-plugin": "^2.3.2",
     "three": "^0.112.1",
