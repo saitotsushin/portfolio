@@ -1,7 +1,18 @@
-precision mediump float;
+varying vec2 vUv;
 
-uniform vec3 u_color;
+uniform float uPercent;
+uniform sampler2D uTex;
 
 void main() {
-    gl_FragColor = vec4(u_color, 1.0);
+  vec2 uv = vUv;
+
+  float moz = uPercent * 0.1;
+
+  if( moz > 0. ) {// 0では割れないので、if文で保護
+    uv = floor( uv / moz ) * moz + ( moz * .5 );
+  }
+
+  vec3 color = texture2D( uTex, uv ).rgb;
+
+  gl_FragColor = vec4( color, 1.0 );
 }

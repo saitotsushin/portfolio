@@ -12,15 +12,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _module_sphere__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./module/sphere */ "./src/assets/scripts/module/sphere.js");
 /* harmony import */ var _module_stage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./module/stage */ "./src/assets/scripts/module/stage.js");
 /* harmony import */ var _module_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./module/object */ "./src/assets/scripts/module/object.js");
+/* harmony import */ var _module_scroll__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./module/scroll */ "./src/assets/scripts/module/scroll.js");
+/* harmony import */ var _module_loadTexture__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./module/loadTexture */ "./src/assets/scripts/module/loadTexture.js");
 
 
 
+
+
+var face;
 var stage = new _module_stage__WEBPACK_IMPORTED_MODULE_1__.default();
 stage.init();
 var sphere = new _module_sphere__WEBPACK_IMPORTED_MODULE_0__.default(stage); // sphere.init();
 
 var object = new _module_object__WEBPACK_IMPORTED_MODULE_2__.default(stage);
 object.init();
+var scroll = new _module_scroll__WEBPACK_IMPORTED_MODULE_3__.default(stage);
+var loadTexture = new _module_loadTexture__WEBPACK_IMPORTED_MODULE_4__.default(stage); // loadTexture.render();
+
+scroll.scrolled(window.scrollY);
+window.addEventListener('scroll', function (e) {
+  scroll.scrolled(window.scrollY);
+  loadTexture.scrolled(window.scrollY);
+});
 window.addEventListener("resize", function () {
   sphere.onResize();
   stage.onResize();
@@ -40,6 +53,199 @@ _raf();
 
 /***/ }),
 
+/***/ "./src/assets/scripts/module/loadTexture.js":
+/*!**************************************************!*\
+  !*** ./src/assets/scripts/module/loadTexture.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ LoadTexture)
+/* harmony export */ });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shaders/vertexshader.vert */ "./src/assets/scripts/shaders/vertexshader.vert");
+/* harmony import */ var _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shaders/fragmentshader.frag */ "./src/assets/scripts/shaders/fragmentshader.frag");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+
+var LoadTexture = /*#__PURE__*/function () {
+  function LoadTexture(stage) {
+    var _this = this;
+
+    _classCallCheck(this, LoadTexture);
+
+    this.stage = stage;
+    this.mouse = new three__WEBPACK_IMPORTED_MODULE_2__.Vector2(0.5, 0.5);
+    this.targetPercent = 1.0;
+    this.imageArr = [];
+    var canvasImages = document.querySelectorAll('.canvas-img');
+    canvasImages.forEach(function (imgElement) {
+      _this.loadImg(imgElement);
+    });
+  }
+
+  _createClass(LoadTexture, [{
+    key: "loadImg",
+    value: function loadImg(elem) {
+      var imgElement = elem.querySelector("img");
+      var w = imgElement.width;
+      var h = imgElement.height;
+      var textureObj = new TextureObject();
+      this.imageArr.push(textureObj); // レンダラーを作成
+
+      textureObj.renderer = new three__WEBPACK_IMPORTED_MODULE_2__.WebGLRenderer();
+      textureObj.renderer.setSize(w, h); // 描画サイズ
+
+      textureObj.renderer.setPixelRatio(window.devicePixelRatio); // ピクセル比
+
+      elem.appendChild(textureObj.renderer.domElement); // カメラを作成（背景シェーダーだけならパースいらないので、OrthographicCameraをつかう）
+
+      textureObj.camera = new three__WEBPACK_IMPORTED_MODULE_2__.OrthographicCamera(-1, 1, 1, -1, 0, -1); // シーンを作成
+
+      textureObj.scene = new three__WEBPACK_IMPORTED_MODULE_2__.Scene(); // 平面をつくる（幅, 高さ, 横分割数, 縦分割数）
+
+      var geo = new three__WEBPACK_IMPORTED_MODULE_2__.PlaneGeometry(2, 2, 1, 1);
+      var loader = new three__WEBPACK_IMPORTED_MODULE_2__.TextureLoader(); // テクスチャローダーを作成
+
+      var texture = loader.load('../assets/images/images.jpg'); // テクスチャ読み込み
+      // uniform変数を定義
+
+      textureObj.uniforms = {
+        uAspect: {
+          value: w / h
+        },
+        uTime: {
+          value: 0.0
+        },
+        uMouse: {
+          value: new three__WEBPACK_IMPORTED_MODULE_2__.Vector2(0.5, 0.5)
+        },
+        uPercent: {
+          value: this.targetPercent
+        },
+        uFixAspect: {
+          value: h / w
+        },
+        uTex: {
+          value: texture
+        }
+      }; // uniform変数とシェーダーソースを渡してマテリアルを作成
+
+      var mat = new three__WEBPACK_IMPORTED_MODULE_2__.ShaderMaterial({
+        uniforms: textureObj.uniforms,
+        vertexShader: _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_0__.default,
+        fragmentShader: _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_1__.default
+      });
+      var mesh = new three__WEBPACK_IMPORTED_MODULE_2__.Mesh(geo, mat); // メッシュをシーンに追加
+
+      textureObj.scene.add(mesh); // 描画ループ開始
+
+      textureObj.render();
+    }
+  }, {
+    key: "scrolled",
+    value: function scrolled(y) {
+      this.imageArr.forEach(function (obj) {
+        // 各オブジェクトに対する操作を行う
+        if (y > 0) {
+          obj.targetPercent = y * -1;
+        } else {
+          obj.targetPercent = y;
+        }
+      });
+    }
+  }]);
+
+  return LoadTexture;
+}();
+
+
+;
+
+var TextureObject = /*#__PURE__*/function () {
+  function TextureObject() {
+    _classCallCheck(this, TextureObject);
+
+    this.w = 0;
+    this.h = 0;
+    this.uniforms = ""; // マウス座標
+
+    this.mouse = new three__WEBPACK_IMPORTED_MODULE_2__.Vector2(0.5, 0.5);
+    this.targetPercent = 1.0;
+    this.scene = null;
+    this.camera = null;
+    this.renderer = null;
+    this.addEventListeners();
+  }
+
+  _createClass(TextureObject, [{
+    key: "addEventListeners",
+    value: function addEventListeners() {
+      var _this2 = this;
+
+      window.addEventListener('mousedown', function (e) {
+        _this2.mousePressed(e.clientX, e.clientY);
+      });
+      window.addEventListener('mouseup', function (e) {
+        _this2.mouseReleased(e.clientX, e.clientY);
+      });
+      window.addEventListener('mousemove', function (e) {
+        _this2.mouseMoved(e.clientX, e.clientY);
+      });
+    }
+  }, {
+    key: "mouseMoved",
+    value: function mouseMoved(x, y) {
+      this.mouse.x = x / this.w;
+      this.mouse.y = 1.0 - y / this.h;
+    }
+  }, {
+    key: "mousePressed",
+    value: function mousePressed(x, y) {
+      this.mouseMoved(x, y);
+      this.targetPercent = 0; // マウスを押したら進捗度の目標値を大きく
+    }
+  }, {
+    key: "mouseReleased",
+    value: function mouseReleased(x, y) {
+      this.mouseMoved(x, y);
+      this.targetPercent = 1; // マウスを押したら進捗度の目標値をデフォルト値に
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this3 = this;
+
+      // 次のフレームを要求
+      requestAnimationFrame(function () {
+        _this3.render();
+      }); // ミリ秒から秒に変換
+
+      var sec = performance.now() / 1000; // シェーダーに渡す時間を更新
+
+      this.uniforms.uTime.value = sec; // シェーダーに渡すマウスを更新
+
+      this.uniforms.uMouse.value.lerp(this.mouse, 0.2); // シェーダーに渡す進捗度を更新
+
+      this.uniforms.uPercent.value += (this.targetPercent - this.uniforms.uPercent.value) * 0.1; // 画面に表示
+
+      this.renderer.render(this.scene, this.camera);
+    }
+  }]);
+
+  return TextureObject;
+}();
+
+/***/ }),
+
 /***/ "./src/assets/scripts/module/object.js":
 /*!*********************************************!*\
   !*** ./src/assets/scripts/module/object.js ***!
@@ -50,15 +256,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ _Object)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
 /* harmony import */ var three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/MTLLoader.js */ "./node_modules/three/examples/jsm/loaders/MTLLoader.js");
 /* harmony import */ var three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/loaders/DDSLoader.js */ "./node_modules/three/examples/jsm/loaders/DDSLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shaders/vertexshader.vert */ "./src/assets/scripts/shaders/vertexshader.vert");
+/* harmony import */ var _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../shaders/fragmentshader.frag */ "./src/assets/scripts/shaders/fragmentshader.frag");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
 
 
 
@@ -71,35 +284,121 @@ var _Object = /*#__PURE__*/function () {
 
     this.color = '#fff';
     this.stage = stage;
+    this.mixer = "";
+    this.clock = new three__WEBPACK_IMPORTED_MODULE_6__.Clock();
   }
 
   _createClass(Object, [{
     key: "init",
     value: function init() {
       // 3Dモデルの読み込み
-      var stage = this.stage;
-      var manager = new three__WEBPACK_IMPORTED_MODULE_3__.LoadingManager();
-      manager.addHandler(/\.dds$/i, new three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_2__.DDSLoader()); // DDSローダーの準備
+      var stage = this.stage; // GLTFLoaderを作成
+
+      var gltfLoader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__.GLTFLoader();
+      var face = this.face; // let mixer = this.mixer;
+
+      var _this = this; // glbファイルを読み込み、シーンに追加
+
+
+      gltfLoader.load('../assets/images/face.glb', function (gltf) {
+        stage.scene.add(gltf.scene);
+        stage.face = gltf.scene;
+
+        _this._animation(gltf);
+      }, undefined, function (error) {
+        console.error(error);
+      }); // this._setMesh();
+
+      /*OBJファイルの場合
+       const manager = new LoadingManager();
+      manager.addHandler(/\.dds$/i, new DDSLoader()); // DDSローダーの準備
+      
       // MTLファイルの読み込み
-
-      new three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_1__.MTLLoader(manager).load('../assets/images/10778_Toilet_V2.mtl', // ロード完了時の処理
-      function (materials) {
-        materials.preload(); // OBJファイルの読み込み
-
-        new three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__.OBJLoader(manager).setMaterials(materials) // マテリアルの指定
-        .load('../assets/images/10778_Toilet_V2.obj', // ロード完了時の処理
-        function (object) {
-          stage.scene.add(object);
-          console.log('読み込み完了', object);
-          object.position.x = 0;
-          object.position.y = 0;
-          object.position.z = 30;
-        });
+      new MTLLoader(manager).load(
+        '../assets/images/face.mtl',
+        // ロード完了時の処理
+        function (materials) {
+          materials.preload();
+          // OBJファイルの読み込み
+          new OBJLoader(manager)
+            .setMaterials(materials) // マテリアルの指定
+            .load(
+              '../assets/images/face.obj', 
+              // ロード完了時の処理
+              function (object) {
+                stage.scene.add(object);
+                console.log('読み込み完了', object);
+                object.position.x = 0;
+                object.position.y = 0;
+                object.position.z = 0;
+              });
+        },
+      );
+      */
+    }
+  }, {
+    key: "_setMesh",
+    value: function _setMesh() {
+      var geometry = new three__WEBPACK_IMPORTED_MODULE_6__.SphereBufferGeometry(0.20, 32, 32);
+      var material = new three__WEBPACK_IMPORTED_MODULE_6__.RawShaderMaterial({
+        vertexShader: _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_4__.default,
+        fragmentShader: _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_5__.default,
+        uniforms: {
+          u_scale: {
+            type: "f",
+            value: 1.5
+          },
+          u_color: {
+            type: "v3",
+            value: new three__WEBPACK_IMPORTED_MODULE_6__.Color(this.color)
+          }
+        }
       });
+      this.mesh = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(geometry, material);
+      this.stage.scene.add(this.mesh); // gsap.to(this.mesh.material.uniforms.u_scale, {
+      //   duration: 1.0,
+      //   ease: 'none',
+      //   value: 1.0,
+      // })
+    }
+  }, {
+    key: "_animation",
+    value: function _animation(_gltf) {
+      // _gltf.scene.scale.set(0.3, 0.3, 0.3);
+      // _gltf.scene.rotation.set(0, 10, 0);
+      // gsap.to(_gltf.scene.rotation, { y: 0, duration: 1,ease: "bounce.out"});
+      // gsap.to(_gltf.scene.scale, { x: 1, y: 1, z: 1, duration: 1, ease: "bounce.out" });
+      var animations = _gltf.animations;
+
+      if (animations && animations.length) {
+        // console.log("this.mixer", this.mixer);
+        //Animation Mixerインスタンスを生成
+        this.mixer = new three__WEBPACK_IMPORTED_MODULE_6__.AnimationMixer(_gltf.scene); //全てのAnimation Clipに対して
+
+        for (var i = 0; i < animations.length; i++) {
+          var animation = animations[i]; //Animation Actionを生成
+
+          var action = this.mixer.clipAction(animation); //ループ設定（1回のみ）
+
+          action.setLoop(three__WEBPACK_IMPORTED_MODULE_6__.LoopPingPong); //アニメーションの最後のフレームでアニメーションが終了
+
+          action.clampWhenFinished = true; //アニメーションを再生
+
+          action.play();
+        }
+      }
     }
   }, {
     key: "_render",
-    value: function _render() {//
+    value: function _render() {
+      //
+      // TODO  requestAnimationFrame(_render);
+      // this.stage.renderer.render(this.stage.scene, this.stage.camera);
+      // requestAnimationFrame(_render);
+      //Animation Mixerを実行
+      if (this.mixer) {
+        this.mixer.update(this.clock.getDelta());
+      }
     }
   }, {
     key: "onResize",
@@ -113,6 +412,55 @@ var _Object = /*#__PURE__*/function () {
   }]);
 
   return Object;
+}();
+
+
+
+/***/ }),
+
+/***/ "./src/assets/scripts/module/scroll.js":
+/*!*********************************************!*\
+  !*** ./src/assets/scripts/module/scroll.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Scroll)
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Scroll = /*#__PURE__*/function () {
+  function Scroll(stage) {
+    _classCallCheck(this, Scroll);
+
+    this.scrollY = 0;
+    this.stage = stage;
+  }
+
+  _createClass(Scroll, [{
+    key: "scrolled",
+    value: function scrolled(y) {
+      // console.log("scrollY",this.scrollY);
+      this.scrollY = y;
+      console.log("stage=", this.stage.face);
+
+      if (this.stage.face) {
+        // this.stage.face.position.y = this.scrollY * 0.01;     
+        this.stage.face.rotation.y = this.scrollY * 0.01; // this.stage.face.scale.set(
+        //     this.scrollY * 0.01,
+        //     this.scrollY * 0.01,
+        //     1
+        // );
+      }
+    }
+  }]);
+
+  return Scroll;
 }();
 
 
@@ -251,19 +599,24 @@ var Stage = /*#__PURE__*/function () {
   function Stage() {
     _classCallCheck(this, Stage);
 
+    // IDが"js-webgl-area"の要素を取得
+    this.webglArea = document.getElementById('js-webgl-area');
     this.renderParam = {
-      clearColor: 0x000000,
-      width: window.innerWidth,
-      height: window.innerHeight
+      clearColor: 0xCCCCCC,
+      width: this.webglArea.offsetWidth,
+      height: this.webglArea.offsetHeight
     };
     this.cameraParam = {
-      fov: 45,
+      fov: 50,
+      //カメラの垂直方向の視野角
       near: 0.1,
+      //カメラが描画するオブジェクトの最小距離
       far: 100,
+      //カメラが描画するオブジェクトの最大距離
       lookAt: new three__WEBPACK_IMPORTED_MODULE_2__.Vector3(0, 0, 0),
       x: 0,
       y: 0,
-      z: 100.0
+      z: 4
     };
     this.scene = null;
     this.camera = null;
@@ -297,6 +650,10 @@ var Stage = /*#__PURE__*/function () {
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setClearColor(new three__WEBPACK_IMPORTED_MODULE_2__.Color(this.renderParam.clearColor));
       this.renderer.setSize(this.renderParam.width, this.renderParam.height);
+      this.renderer.physicallyCorrectLights = true;
+      this.renderer.outputEncoding = three__WEBPACK_IMPORTED_MODULE_2__.sRGBEncoding;
+      this.renderer.gammaOutput = true;
+      this.renderer.toneMapping = three__WEBPACK_IMPORTED_MODULE_2__.ACESFilmicToneMapping;
       var wrapper = document.querySelector("#webgl");
       wrapper.appendChild(this.renderer.domElement);
     }
@@ -310,18 +667,38 @@ var Stage = /*#__PURE__*/function () {
         this.isInitialized = true;
       }
 
-      var windowWidth = window.innerWidth;
-      var windowHeight = window.innerHeight;
+      var windowWidth = this.webglArea.offsetWidth;
+      var windowHeight = this.webglArea.offsetHeight;
       this.camera.aspect = windowWidth / windowHeight;
       this.camera.fov = this.cameraParam.fov;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(windowWidth, windowHeight);
-      var directionalLight = new three__WEBPACK_IMPORTED_MODULE_2__.DirectionalLight(0xffffff);
-      directionalLight.position.set(-1, 1, 1).normalize();
+      /*
+      DirectionalLight
+      特定の方向に放射される光。光源は無限に離れているものとして、そこから発生する光線はすべて平行になります。
+      わかりやすい利用例としては、太陽の光です。
+      new THREE.DirectionalLight(色, 光の強さ)
+      */
+
+      var directionalLight = new three__WEBPACK_IMPORTED_MODULE_2__.DirectionalLight(0xffffff, 2);
+      directionalLight.position.set(1, 2, 1).normalize();
       this.scene.add(directionalLight);
-      var ambientLight = new three__WEBPACK_IMPORTED_MODULE_2__.AmbientLight(0xffffff);
-      ambientLight.intensity = 0.5;
+      /*
+      AmbientLight
+      環境光源を実現するクラスです。3D空間全体に均等に光を当てます。一律に明るくしたいときに使う
+      */
+
+      var ambientLight = new three__WEBPACK_IMPORTED_MODULE_2__.AmbientLight(0xffffff, 1); //blenderのScene>worldのサーフェスの色に合わせる
+      // ambientLight.intensity = 1;
+
       this.scene.add(ambientLight);
+      /*
+      PointLightクラスは単一点からあらゆる方向から放射される光源です。わかりやすい例としては、裸電球です。裸電球は周辺を明るくします。
+      点光源を作成
+      new THREE.PointLight(色, 光の強さ, 距離, 光の減衰率)
+      */
+      // const pointLight = new PointLight(0xFFFFFF, 2, 50, 1.0);
+      // this.scene.add(pointLight);
     }
   }, {
     key: "_setDev",
@@ -385,7 +762,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("precision mediump float;\n#define GLSLIFY 1\n\nuniform vec3 u_color;\n\nvoid main() {\n    gl_FragColor = vec4(u_color, 1.0);\n}");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("#define GLSLIFY 1\nvarying vec2 vUv;\n\nuniform float uPercent;\nuniform sampler2D uTex;\n\nvoid main() {\n  vec2 uv = vUv;\n\n  float moz = uPercent * 0.1;\n\n  if( moz > 0. ) {// 0では割れないので、if文で保護\n    uv = floor( uv / moz ) * moz + ( moz * .5 );\n  }\n\n  vec3 color = texture2D( uTex, uv ).rgb;\n\n  gl_FragColor = vec4( color, 1.0 );\n}");
 
 /***/ }),
 
@@ -399,7 +776,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("#define GLSLIFY 1\nattribute vec3 position;\nuniform mat4 modelViewMatrix;\nuniform mat4 projectionMatrix;\nuniform float u_scale;\n\n//\n// Description : Array and textureless GLSL 2D/3D/4D simplex\n//               noise functions.\n//      Author : Ian McEwan, Ashima Arts.\n//  Maintainer : ijm\n//     Lastmod : 20110822 (ijm)\n//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.\n//               Distributed under the MIT License. See LICENSE file.\n//               https://github.com/ashima/webgl-noise\n//\n\nvec3 mod289(vec3 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 mod289(vec4 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 permute(vec4 x) {\n     return mod289(((x*34.0)+1.0)*x);\n}\n\nvec4 taylorInvSqrt(vec4 r)\n{\n  return 1.79284291400159 - 0.85373472095314 * r;\n}\n\nfloat snoise(vec3 v)\n  {\n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n// First corner\n  vec3 i  = floor(v + dot(v, C.yyy) );\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\n\n// Other corners\n  vec3 g = step(x0.yzx, x0.xyz);\n  vec3 l = 1.0 - g;\n  vec3 i1 = min( g.xyz, l.zxy );\n  vec3 i2 = max( g.xyz, l.zxy );\n\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\n  vec3 x1 = x0 - i1 + C.xxx;\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n// Permutations\n  i = mod289(i);\n  vec4 p = permute( permute( permute(\n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))\n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n  float n_ = 0.142857142857; // 1.0/7.0\n  vec3  ns = n_ * D.wyz - D.xzx;\n\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n  vec4 x_ = floor(j * ns.z);\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\n  vec4 x = x_ *ns.x + ns.yyyy;\n  vec4 y = y_ *ns.x + ns.yyyy;\n  vec4 h = 1.0 - abs(x) - abs(y);\n\n  vec4 b0 = vec4( x.xy, y.xy );\n  vec4 b1 = vec4( x.zw, y.zw );\n\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\n  vec4 s0 = floor(b0)*2.0 + 1.0;\n  vec4 s1 = floor(b1)*2.0 + 1.0;\n  vec4 sh = -step(h, vec4(0.0));\n\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\n  vec3 p0 = vec3(a0.xy,h.x);\n  vec3 p1 = vec3(a0.zw,h.y);\n  vec3 p2 = vec3(a1.xy,h.z);\n  vec3 p3 = vec3(a1.zw,h.w);\n\n//Normalise gradients\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n  p0 *= norm.x;\n  p1 *= norm.y;\n  p2 *= norm.z;\n  p3 *= norm.w;\n\n// Mix final noise value\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n  m = m * m;\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),\n                                dot(p2,x2), dot(p3,x3) ) );\n  }\n\nvoid main() {\n    gl_Position = projectionMatrix * modelViewMatrix * vec4(position * u_scale, 1.0 );\n}");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("#define GLSLIFY 1\nvarying vec2 vUv;\n\nuniform float uFixAspect;\n\nvoid main() {\n  // 余白ができないようにアスペクト補正\n  vUv = uv - .5;\n  vUv.y *= uFixAspect;\n  vUv += .5;\n\n  gl_Position = vec4( position, 1.0 );\n}");
 
 /***/ })
 

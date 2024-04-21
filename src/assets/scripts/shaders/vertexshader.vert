@@ -1,10 +1,12 @@
-attribute vec3 position;
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
-uniform float u_scale;
+varying vec2 vUv;
 
-#pragma glslify: snoise3 = require(glsl-noise/simplex/3d);
+uniform float uFixAspect;
 
 void main() {
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position * u_scale, 1.0 );
+  // 余白ができないようにアスペクト補正
+  vUv = uv - .5;
+  vUv.y *= uFixAspect;
+  vUv += .5;
+
+  gl_Position = vec4( position, 1.0 );
 }
