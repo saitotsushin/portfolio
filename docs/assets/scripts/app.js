@@ -59,13 +59,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ _Object)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/MTLLoader.js */ "./node_modules/three/examples/jsm/loaders/MTLLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_DDSLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/loaders/DDSLoader.js */ "./node_modules/three/examples/jsm/loaders/DDSLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
-/* harmony import */ var _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shaders/vertexshader.vert */ "./src/assets/scripts/shaders/vertexshader.vert");
-/* harmony import */ var _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../shaders/fragmentshader.frag */ "./src/assets/scripts/shaders/fragmentshader.frag");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -75,13 +70,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-
-
-
-
- // import vertexShader from '../shaders/vertexshader.vert';
-// import fragmentShader from '../shaders/fragmentshader.frag';
-
 var _Object = /*#__PURE__*/function () {
   function Object(stage) {
     _classCallCheck(this, Object);
@@ -89,12 +77,15 @@ var _Object = /*#__PURE__*/function () {
     this.color = '#fff';
     this.stage = stage;
     this.mixer = "";
-    this.clock = new three__WEBPACK_IMPORTED_MODULE_6__.Clock();
+    this.clock = new three__WEBPACK_IMPORTED_MODULE_1__.Clock();
     this.offScene = null;
     this.offCamera = null;
+    this.postScene = null;
+    this.postCamera = null;
     this.renderTarget = null;
     this.mat = null;
     this.webGLRenderer = null;
+    this.face_clone = null;
     /*
     * シェーダーに渡すデータ
     */
@@ -105,7 +96,7 @@ var _Object = /*#__PURE__*/function () {
       },
       // ウィンドウの幅と高さ
       uMouse: {
-        value: [0, 0]
+        value: [-100.0, -100.0]
       },
       // マウス座標
       uTexture0: {
@@ -121,51 +112,46 @@ var _Object = /*#__PURE__*/function () {
       // 3Dモデルの読み込み
       var stage = this.stage; // GLTFLoaderを作成
 
-      var gltfLoader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__.GLTFLoader();
+      var gltfLoader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_0__.GLTFLoader();
       var face = this.face; // let mixer = this.mixer;
 
-      this.webGLRenderer = new three__WEBPACK_IMPORTED_MODULE_6__.WebGLRenderer();
+      this.webGLRenderer = new three__WEBPACK_IMPORTED_MODULE_1__.WebGLRenderer();
       document.getElementById("screen").appendChild(this.webGLRenderer.domElement);
       this.webGLRenderer.setSize(window.innerWidth, window.innerHeight);
-      this.renderTarget = new three__WEBPACK_IMPORTED_MODULE_6__.WebGLRenderTarget(window.innerWidth, window.innerHeight); // 頂点シェーダー
+      this.renderTarget = new three__WEBPACK_IMPORTED_MODULE_1__.WebGLRenderTarget(window.innerWidth, window.innerHeight); // 頂点シェーダー
 
-      var vertexShader = "\n      // precision mediump float;\n\n      // out vec2 vUv;\n\n      // void main(void) {\n      //   vUv = uv; // \u30D5\u30E9\u30B0\u30E1\u30F3\u30C8\u30B7\u30A7\u30FC\u30C0\u30FC\u306B\u30C6\u30AF\u30B9\u30C1\u30E3\u5EA7\u6A19\u3092\u6E21\u3059\n      //   gl_Position = vec4(position, 1.0); // \u5EA7\u6A19\u5909\u63DB\u3057\u306A\u3044\n      // }\n\n      varying vec2 vUv;\n      void main() {\n          vUv = uv;\n          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n      }\n    "; // フラグメントシェーダー
+      var vertexShader = "\n      varying vec2 vUv;\n      void main() {\n        vUv = uv;\n        gl_Position = vec4(position, 1.0);\n      }\n    "; // フラグメントシェーダー
 
-      var fragmentShader = "\n      uniform vec2 uResolution; // \u30A6\u30A3\u30F3\u30C9\u30A6\u306E\u5E45\u3068\u9AD8\u3055\n      uniform vec2 uMouse; // \u30DE\u30A6\u30B9\u5EA7\u6A19\n      uniform sampler2D uTexture0; // \u30AA\u30D5\u30B9\u30AF\u30EA\u30FC\u30F3(\u30E1\u30E2\u30EA)\u306B\u63CF\u304D\u8FBC\u3093\u3060\u30C6\u30AF\u30B9\u30C1\u30E3\n      varying vec2 vUv; // \u30C6\u30AF\u30B9\u30C1\u30E3\u5EA7\u6A19\n      // out vec4 fragColor; // \u6700\u7D42\u7684\u306A\u30D4\u30AF\u30BB\u30EB\u306E\u8272\n\n      void main(void) {\n\n        // \u8272\u3092\u3064\u3051\u308B\u30D4\u30AF\u30BB\u30EB\u306E\u5EA7\u6A19\u3092\u6B63\u898F\u5316(-1~1)\u3057\u307E\u3059\n        vec2 p = (gl_FragCoord.xy * 2.0 - uResolution) / min(uResolution.x, uResolution.y);\n\n        // \u30E2\u30B6\u30A4\u30AF\u4FC2\u6570\u3092\u4F5C\u308A\u307E\u3059\n        float mosaic = (1.0 - step(0.3, length(p - uMouse))) * max(uResolution.x, uResolution.y) + 50.0;\n\n        // \u30E2\u30B6\u30A4\u30AF\u4FC2\u6570\u3092\u4F7F\u3063\u3066\u30C6\u30AF\u30B9\u30C1\u30E3\u5EA7\u6A19\u3092\u5909\u63DB\u3057\u307E\u3059(\u3053\u3053\u3067\u30E2\u30B6\u30A4\u30AF\u52A0\u5DE5\u3092\u3057\u3066\u3044\u307E\u3059)\n        vec2 uv = vec2(0.0, 0.0);\n\n        // \u30C6\u30AF\u30B9\u30C1\u30E3\u304B\u3089\u8272\u3092\u53D6\u308A\u51FA\u3057\u3066\u30D4\u30AF\u30BB\u30EB\u306E\u8272\u3068\u3057\u307E\u3059\n        gl_FragColor = texture(uTexture0, uv);\n        \n      }\n      // varying vec2 vUv;\n      // uniform sampler2D uTex;\n\n      // void main() {\n      //   vec4 color = vec4(0.0, 1.0, 1.0, 1.0);// rgba\n      //   gl_FragColor = color;\n      // }\n    "; // ベースとなるシーンには板ポリ１枚だけしかありません
+      var fragmentShader = "\n      //\u53C2\u8003: https://blog.design-nkt.com/osyare-glsl2/\n      uniform vec2 uResolution; // \u30A6\u30A3\u30F3\u30C9\u30A6\u306E\u5E45\u3068\u9AD8\u3055\n      uniform vec2 uMouse; // \u30DE\u30A6\u30B9\u5EA7\u6A19\n      uniform sampler2D t1; // \u30AA\u30D5\u30B9\u30AF\u30EA\u30FC\u30F3(\u30E1\u30E2\u30EA)\u306B\u63CF\u304D\u8FBC\u3093\u3060\u30C6\u30AF\u30B9\u30C1\u30E3\n      varying vec2 vUv; // \u30C6\u30AF\u30B9\u30C1\u30E3\u5EA7\u6A19\n\n      void main(void) {\n\n        // \u8272\u3092\u3064\u3051\u308B\u30D4\u30AF\u30BB\u30EB\u306E\u5EA7\u6A19\u3092\u6B63\u898F\u5316(-1~1)\u3057\u307E\u3059\n        vec2 p = (gl_FragCoord.xy * 2.0 - uResolution) / min(uResolution.x, uResolution.y);\n\n        // \u30E2\u30B6\u30A4\u30AF\u4FC2\u6570\u3092\u4F5C\u308A\u307E\u3059\n        float mosaic = (1.0 - step(0.3, length(p - uMouse))) * max(uResolution.x, uResolution.y) + 50.0;\n\n        // \u30E2\u30B6\u30A4\u30AF\u4FC2\u6570\u3092\u4F7F\u3063\u3066\u30C6\u30AF\u30B9\u30C1\u30E3\u5EA7\u6A19\u3092\u5909\u63DB\u3057\u307E\u3059(\u3053\u3053\u3067\u30E2\u30B6\u30A4\u30AF\u52A0\u5DE5\u3092\u3057\u3066\u3044\u307E\u3059)\n        // vec2 uv = vec2(0.0, 0.0);\n        vec2 uv = floor(vUv * 200.0) / 200.0;\n\n        // \u30C6\u30AF\u30B9\u30C1\u30E3\u304B\u3089\u8272\u3092\u53D6\u308A\u51FA\u3057\u3066\u30D4\u30AF\u30BB\u30EB\u306E\u8272\u3068\u3057\u307E\u3059\n        gl_FragColor = texture(t1, uv);\n        \n      }\n    "; // ベースとなるシーンには板ポリ１枚だけしかありません
       // シェーダーを使うのでShaderMaterialを使います
 
-      var geo = new three__WEBPACK_IMPORTED_MODULE_6__.PlaneGeometry(2, 2); // 板ポリをウィンドウぴったりにするために２×２
+      var geo = new three__WEBPACK_IMPORTED_MODULE_1__.PlaneGeometry(2, 2); // 板ポリをウィンドウぴったりにするために２×２
 
-      this.mat = new three__WEBPACK_IMPORTED_MODULE_6__.ShaderMaterial({
+      this.mat = new three__WEBPACK_IMPORTED_MODULE_1__.ShaderMaterial({
         vertexShader: vertexShader,
         // 頂点シェーダー
         fragmentShader: fragmentShader,
         uniforms: this.uniforms
       });
-      var plane = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(geo, this.mat);
-      plane.position.set(0, 0, 1); //#TODO (0,0,5)だと表示される
+      var plane = new three__WEBPACK_IMPORTED_MODULE_1__.Mesh(geo, this.mat);
+      plane.position.set(0, 0, 1);
 
       var _this = this;
 
-      this.offScene = new three__WEBPACK_IMPORTED_MODULE_6__.Scene();
-      this.offCamera = new three__WEBPACK_IMPORTED_MODULE_6__.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      this.offScene = new three__WEBPACK_IMPORTED_MODULE_1__.Scene();
+      this.offCamera = new three__WEBPACK_IMPORTED_MODULE_1__.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
       this.offCamera.position.set(0, 0, 5);
-      var ambientLight = new three__WEBPACK_IMPORTED_MODULE_6__.AmbientLight(0xaaaaaa);
+      var ambientLight = new three__WEBPACK_IMPORTED_MODULE_1__.AmbientLight(0xaaaaaa);
       this.offScene.add(ambientLight);
-      var directionalLight = new three__WEBPACK_IMPORTED_MODULE_6__.DirectionalLight(0xffffff, 1.0);
+      var directionalLight = new three__WEBPACK_IMPORTED_MODULE_1__.DirectionalLight(0xffffff, 1.0);
       directionalLight.position.set(-1, 2, 2);
       this.offScene.add(directionalLight);
-      var _offScene = this.offScene; // this.offScene.add(plane);
-      // // ボックスジオメトリとマテリアルの作成
-      // const geometry = new BoxGeometry(1, 1, 1);
-      // const material = new MeshBasicMaterial({ color: 0x00ff00 });
-      // const cube = new Mesh(geometry, material);
-      // // ボックスをシーンに追加
-      // this.offScene.add(cube);
-
-      var postScene = new three__WEBPACK_IMPORTED_MODULE_6__.Scene();
-      var postGeometry = new three__WEBPACK_IMPORTED_MODULE_6__.PlaneBufferGeometry(2, 2);
-      var postMaterial = new three__WEBPACK_IMPORTED_MODULE_6__.ShaderMaterial({
+      var _offScene = this.offScene;
+      this.postScene = new three__WEBPACK_IMPORTED_MODULE_1__.Scene();
+      this.postCamera = new three__WEBPACK_IMPORTED_MODULE_1__.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      this.postCamera.position.set(0, 0, 5);
+      var postGeometry = new three__WEBPACK_IMPORTED_MODULE_1__.PlaneBufferGeometry(2, 2);
+      var postMaterial = new three__WEBPACK_IMPORTED_MODULE_1__.ShaderMaterial({
         vertexShader: vertexShader,
         // 頂点シェーダー
         fragmentShader: fragmentShader,
@@ -173,11 +159,20 @@ var _Object = /*#__PURE__*/function () {
           t1: {
             type: "t",
             value: this.renderTarget.texture
-          }
+          },
+          uResolution: {
+            value: [window.innerWidth, window.innerHeight]
+          },
+          // ウィンドウの幅と高さ
+          uMouse: {
+            value: [0, 0]
+          } // マウス座標  
+
         }
       });
-      var postMesh = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(postGeometry, postMaterial);
-      postScene.add(postMesh); // glbファイルを読み込み、シーンに追加
+      var postMesh = new three__WEBPACK_IMPORTED_MODULE_1__.Mesh(postGeometry, postMaterial);
+      postMesh.position.set(0, 0, 1);
+      this.postScene.add(postMesh); // glbファイルを読み込み、シーンに追加
 
       gltfLoader.load('../assets/images/face.glb', function (gltf) {
         stage.scene.add(gltf.scene);
@@ -185,10 +180,13 @@ var _Object = /*#__PURE__*/function () {
 
         _this._animation(gltf);
 
-        var face_clone = gltf.scene.clone();
-        face_clone.position.set(1, 0, 0); // ライトを２種類作ります
+        var _face_clone = gltf.scene.clone();
 
-        _offScene.add(face_clone);
+        _this.face_clone = _face_clone;
+
+        _face_clone.position.set(1, 0, 0);
+
+        _offScene.add(_face_clone);
       }, undefined, function (error) {
         console.error(error);
       });
@@ -202,17 +200,13 @@ var _Object = /*#__PURE__*/function () {
       var animations = _gltf.animations;
 
       if (animations && animations.length) {
-        //Animation Mixerインスタンスを生成
-        this.mixer = new three__WEBPACK_IMPORTED_MODULE_6__.AnimationMixer(_gltf.scene); //全てのAnimation Clipに対して
+        console.log("anime");
+        this.mixer = new three__WEBPACK_IMPORTED_MODULE_1__.AnimationMixer(_gltf.scene); //全てのAnimation Clipに対して
 
         for (var i = 0; i < animations.length; i++) {
           var animation = animations[i]; //Animation Actionを生成
 
-          var action = this.mixer.clipAction(animation); //ループ設定（1回のみ）
-
-          action.setLoop(three__WEBPACK_IMPORTED_MODULE_6__.LoopPingPong); //アニメーションの最後のフレームでアニメーションが終了
-
-          action.clampWhenFinished = true; //アニメーションを再生
+          var action = this.mixer.clipAction(animation); //アニメーションを再生
 
           action.play();
         }
@@ -221,20 +215,11 @@ var _Object = /*#__PURE__*/function () {
   }, {
     key: "_render",
     value: function _render() {
-      // Animation Mixerを実行
       if (this.mixer) {
+        console.log("_ren");
         this.mixer.update(this.clock.getDelta());
-      }
+      } // this.webGLRenderer.setRenderTarget(null); // レンダーターゲットを解除します
 
-      this.webGLRenderer.setClearColor(0xf5f542); // 背景色
-
-      this.webGLRenderer.setRenderTarget(this.renderTarget);
-      this.webGLRenderer.render(this.offScene, this.offCamera); // console.log("this.mat.uniforms = ", this.mat.uniforms.uResolution);
-      // this.uniforms.uResolution.value = [window.innerWidth, window.innerHeight];
-      // this.uniforms.uMouse.value = [0, 0]; // マウス座標
-      // this.uniforms.uTexture0.value = this.renderTarget.texture;
-
-      this.webGLRenderer.setRenderTarget(null); // レンダーターゲットを解除します
     }
   }, {
     key: "onResize",
@@ -245,8 +230,12 @@ var _Object = /*#__PURE__*/function () {
     value: function onRaf() {
       this._render();
 
-      this.webGLRenderer.render(this.offScene, this.offCamera); // this.stage.renderer.setClearColor(0x000000); // 背景色(今回は無くてもいい)
-      // this.stage.renderer.render(scene, camera); // ベース用のシーンとカメラをセットしてディスプレイ(canvas)に描き込みます
+      this.webGLRenderer.setClearColor(0xf5f542); // 背景色
+
+      this.webGLRenderer.setRenderTarget(this.renderTarget);
+      this.webGLRenderer.render(this.offScene, this.offCamera);
+      this.webGLRenderer.setRenderTarget(null);
+      this.webGLRenderer.render(this.postScene, this.postCamera);
     }
   }]);
 
@@ -436,34 +425,6 @@ var Stage = /*#__PURE__*/function () {
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
-
-/***/ }),
-
-/***/ "./src/assets/scripts/shaders/fragmentshader.frag":
-/*!********************************************************!*\
-  !*** ./src/assets/scripts/shaders/fragmentshader.frag ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("#define GLSLIFY 1\nvarying vec2 vUv;\n\nuniform float uPercent;\nuniform sampler2D uTex;\n\nvoid main() {\n  vec2 uv = vUv;\n\n  float moz = uPercent * 0.1;\n\n  if( moz > 0. ) {// 0では割れないので、if文で保護\n    uv = floor( uv / moz ) * moz + ( moz * .5 );\n  }\n\n  vec3 color = texture2D( uTex, uv ).rgb;\n\n  gl_FragColor = vec4( color, 1.0 );\n}");
-
-/***/ }),
-
-/***/ "./src/assets/scripts/shaders/vertexshader.vert":
-/*!******************************************************!*\
-  !*** ./src/assets/scripts/shaders/vertexshader.vert ***!
-  \******************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("#define GLSLIFY 1\nvarying vec2 vUv;\n\nuniform float uFixAspect;\n\nvoid main() {\n  // 余白ができないようにアスペクト補正\n  vUv = uv - .5;\n  vUv.y *= uFixAspect;\n  vUv += .5;\n\n  gl_Position = vec4( position, 1.0 );\n}");
 
 /***/ })
 
