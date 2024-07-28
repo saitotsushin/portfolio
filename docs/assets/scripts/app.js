@@ -9,30 +9,26 @@
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _module_sphere__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./module/sphere */ "./src/assets/scripts/module/sphere.js");
-/* harmony import */ var _module_stage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./module/stage */ "./src/assets/scripts/module/stage.js");
-/* harmony import */ var _module_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./module/object */ "./src/assets/scripts/module/object.js");
-/* harmony import */ var _module_scroll__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./module/scroll */ "./src/assets/scripts/module/scroll.js");
-/* harmony import */ var _module_loadTexture__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./module/loadTexture */ "./src/assets/scripts/module/loadTexture.js");
+/* harmony import */ var _module_stage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./module/stage */ "./src/assets/scripts/module/stage.js");
+/* harmony import */ var _module_object__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./module/object */ "./src/assets/scripts/module/object.js");
+// import Sphere from './module/sphere';
 
-
-
-
+ // import Scroll from './module/scroll';
+// import LoadTexture from './module/loadTexture';
 
 var face;
-var stage = new _module_stage__WEBPACK_IMPORTED_MODULE_1__.default();
-stage.init();
-var sphere = new _module_sphere__WEBPACK_IMPORTED_MODULE_0__.default(stage); // sphere.init();
+var stage = new _module_stage__WEBPACK_IMPORTED_MODULE_0__.default();
+stage.init(); // const sphere = new Sphere(stage);
+// sphere.init();
 
-var object = new _module_object__WEBPACK_IMPORTED_MODULE_2__.default(stage);
-object.init();
-var scroll = new _module_scroll__WEBPACK_IMPORTED_MODULE_3__.default(stage);
-var loadTexture = new _module_loadTexture__WEBPACK_IMPORTED_MODULE_4__.default(stage); // loadTexture.render();
+var object = new _module_object__WEBPACK_IMPORTED_MODULE_1__.default(stage);
+object.init(); // const scroll = new Scroll(stage);
+// const loadTexture = new LoadTexture(stage);
+// loadTexture.render();
+// scroll.scrolled(window.scrollY);
 
-scroll.scrolled(window.scrollY);
-window.addEventListener('scroll', function (e) {
-  scroll.scrolled(window.scrollY);
-  loadTexture.scrolled(window.scrollY);
+window.addEventListener('scroll', function (e) {// scroll.scrolled(window.scrollY);
+  // loadTexture.scrolled(window.scrollY);
 });
 window.addEventListener("resize", function () {
   sphere.onResize();
@@ -41,208 +37,15 @@ window.addEventListener("resize", function () {
 
 var _raf = function _raf() {
   window.requestAnimationFrame(function () {
-    _raf();
+    _raf(); // sphere.onRaf();
 
-    sphere.onRaf();
+
     object.onRaf();
     stage.onRaf();
   });
 };
 
 _raf();
-
-/***/ }),
-
-/***/ "./src/assets/scripts/module/loadTexture.js":
-/*!**************************************************!*\
-  !*** ./src/assets/scripts/module/loadTexture.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ LoadTexture)
-/* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shaders/vertexshader.vert */ "./src/assets/scripts/shaders/vertexshader.vert");
-/* harmony import */ var _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shaders/fragmentshader.frag */ "./src/assets/scripts/shaders/fragmentshader.frag");
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-
-
-var LoadTexture = /*#__PURE__*/function () {
-  function LoadTexture(stage) {
-    var _this = this;
-
-    _classCallCheck(this, LoadTexture);
-
-    this.stage = stage;
-    this.mouse = new three__WEBPACK_IMPORTED_MODULE_2__.Vector2(0.5, 0.5);
-    this.targetPercent = 1.0;
-    this.imageArr = [];
-    var canvasImages = document.querySelectorAll('.canvas-img');
-    canvasImages.forEach(function (imgElement) {
-      _this.loadImg(imgElement);
-    });
-  }
-
-  _createClass(LoadTexture, [{
-    key: "loadImg",
-    value: function loadImg(elem) {
-      var imgElement = elem.querySelector("img");
-      var w = imgElement.width;
-      var h = imgElement.height;
-      var textureObj = new TextureObject();
-      this.imageArr.push(textureObj); // レンダラーを作成
-
-      textureObj.renderer = new three__WEBPACK_IMPORTED_MODULE_2__.WebGLRenderer();
-      textureObj.renderer.setSize(w, h); // 描画サイズ
-
-      textureObj.renderer.setPixelRatio(window.devicePixelRatio); // ピクセル比
-
-      elem.appendChild(textureObj.renderer.domElement); // カメラを作成（背景シェーダーだけならパースいらないので、OrthographicCameraをつかう）
-
-      textureObj.camera = new three__WEBPACK_IMPORTED_MODULE_2__.OrthographicCamera(-1, 1, 1, -1, 0, -1); // シーンを作成
-
-      textureObj.scene = new three__WEBPACK_IMPORTED_MODULE_2__.Scene(); // 平面をつくる（幅, 高さ, 横分割数, 縦分割数）
-
-      var geo = new three__WEBPACK_IMPORTED_MODULE_2__.PlaneGeometry(2, 2, 1, 1);
-      var loader = new three__WEBPACK_IMPORTED_MODULE_2__.TextureLoader(); // テクスチャローダーを作成
-
-      var texture = loader.load('../assets/images/images.jpg'); // テクスチャ読み込み
-      // uniform変数を定義
-
-      textureObj.uniforms = {
-        uAspect: {
-          value: w / h
-        },
-        uTime: {
-          value: 0.0
-        },
-        uMouse: {
-          value: new three__WEBPACK_IMPORTED_MODULE_2__.Vector2(0.5, 0.5)
-        },
-        uPercent: {
-          value: this.targetPercent
-        },
-        uFixAspect: {
-          value: h / w
-        },
-        uTex: {
-          value: texture
-        }
-      }; // uniform変数とシェーダーソースを渡してマテリアルを作成
-
-      var mat = new three__WEBPACK_IMPORTED_MODULE_2__.ShaderMaterial({
-        uniforms: textureObj.uniforms,
-        vertexShader: _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_0__.default,
-        fragmentShader: _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_1__.default
-      });
-      var mesh = new three__WEBPACK_IMPORTED_MODULE_2__.Mesh(geo, mat); // メッシュをシーンに追加
-
-      textureObj.scene.add(mesh); // 描画ループ開始
-
-      textureObj.render();
-    }
-  }, {
-    key: "scrolled",
-    value: function scrolled(y) {
-      this.imageArr.forEach(function (obj) {
-        // 各オブジェクトに対する操作を行う
-        if (y > 0) {
-          obj.targetPercent = y * -1;
-        } else {
-          obj.targetPercent = y;
-        }
-      });
-    }
-  }]);
-
-  return LoadTexture;
-}();
-
-
-;
-
-var TextureObject = /*#__PURE__*/function () {
-  function TextureObject() {
-    _classCallCheck(this, TextureObject);
-
-    this.w = 0;
-    this.h = 0;
-    this.uniforms = ""; // マウス座標
-
-    this.mouse = new three__WEBPACK_IMPORTED_MODULE_2__.Vector2(0.5, 0.5);
-    this.targetPercent = 1.0;
-    this.scene = null;
-    this.camera = null;
-    this.renderer = null;
-    this.addEventListeners();
-  }
-
-  _createClass(TextureObject, [{
-    key: "addEventListeners",
-    value: function addEventListeners() {
-      var _this2 = this;
-
-      window.addEventListener('mousedown', function (e) {
-        _this2.mousePressed(e.clientX, e.clientY);
-      });
-      window.addEventListener('mouseup', function (e) {
-        _this2.mouseReleased(e.clientX, e.clientY);
-      });
-      window.addEventListener('mousemove', function (e) {
-        _this2.mouseMoved(e.clientX, e.clientY);
-      });
-    }
-  }, {
-    key: "mouseMoved",
-    value: function mouseMoved(x, y) {
-      this.mouse.x = x / this.w;
-      this.mouse.y = 1.0 - y / this.h;
-    }
-  }, {
-    key: "mousePressed",
-    value: function mousePressed(x, y) {
-      this.mouseMoved(x, y);
-      this.targetPercent = 0; // マウスを押したら進捗度の目標値を大きく
-    }
-  }, {
-    key: "mouseReleased",
-    value: function mouseReleased(x, y) {
-      this.mouseMoved(x, y);
-      this.targetPercent = 1; // マウスを押したら進捗度の目標値をデフォルト値に
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this3 = this;
-
-      // 次のフレームを要求
-      requestAnimationFrame(function () {
-        _this3.render();
-      }); // ミリ秒から秒に変換
-
-      var sec = performance.now() / 1000; // シェーダーに渡す時間を更新
-
-      this.uniforms.uTime.value = sec; // シェーダーに渡すマウスを更新
-
-      this.uniforms.uMouse.value.lerp(this.mouse, 0.2); // シェーダーに渡す進捗度を更新
-
-      this.uniforms.uPercent.value += (this.targetPercent - this.uniforms.uPercent.value) * 0.1; // 画面に表示
-
-      this.renderer.render(this.scene, this.camera);
-    }
-  }]);
-
-  return TextureObject;
-}();
 
 /***/ }),
 
@@ -276,7 +79,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-
+ // import vertexShader from '../shaders/vertexshader.vert';
+// import fragmentShader from '../shaders/fragmentshader.frag';
 
 var _Object = /*#__PURE__*/function () {
   function Object(stage) {
@@ -286,6 +90,29 @@ var _Object = /*#__PURE__*/function () {
     this.stage = stage;
     this.mixer = "";
     this.clock = new three__WEBPACK_IMPORTED_MODULE_6__.Clock();
+    this.offScene = null;
+    this.offCamera = null;
+    this.renderTarget = null;
+    this.mat = null;
+    this.webGLRenderer = null;
+    /*
+    * シェーダーに渡すデータ
+    */
+
+    this.uniforms = {
+      uResolution: {
+        value: [0, 0]
+      },
+      // ウィンドウの幅と高さ
+      uMouse: {
+        value: [0, 0]
+      },
+      // マウス座標
+      uTexture0: {
+        value: null
+      } // テクスチャ
+
+    };
   }
 
   _createClass(Object, [{
@@ -297,81 +124,84 @@ var _Object = /*#__PURE__*/function () {
       var gltfLoader = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__.GLTFLoader();
       var face = this.face; // let mixer = this.mixer;
 
-      var _this = this; // glbファイルを読み込み、シーンに追加
+      this.webGLRenderer = new three__WEBPACK_IMPORTED_MODULE_6__.WebGLRenderer();
+      document.getElementById("screen").appendChild(this.webGLRenderer.domElement);
+      this.webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+      this.renderTarget = new three__WEBPACK_IMPORTED_MODULE_6__.WebGLRenderTarget(window.innerWidth, window.innerHeight); // 頂点シェーダー
 
+      var vertexShader = "\n      // precision mediump float;\n\n      // out vec2 vUv;\n\n      // void main(void) {\n      //   vUv = uv; // \u30D5\u30E9\u30B0\u30E1\u30F3\u30C8\u30B7\u30A7\u30FC\u30C0\u30FC\u306B\u30C6\u30AF\u30B9\u30C1\u30E3\u5EA7\u6A19\u3092\u6E21\u3059\n      //   gl_Position = vec4(position, 1.0); // \u5EA7\u6A19\u5909\u63DB\u3057\u306A\u3044\n      // }\n\n      varying vec2 vUv;\n      void main() {\n          vUv = uv;\n          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n      }\n    "; // フラグメントシェーダー
+
+      var fragmentShader = "\n      uniform vec2 uResolution; // \u30A6\u30A3\u30F3\u30C9\u30A6\u306E\u5E45\u3068\u9AD8\u3055\n      uniform vec2 uMouse; // \u30DE\u30A6\u30B9\u5EA7\u6A19\n      uniform sampler2D uTexture0; // \u30AA\u30D5\u30B9\u30AF\u30EA\u30FC\u30F3(\u30E1\u30E2\u30EA)\u306B\u63CF\u304D\u8FBC\u3093\u3060\u30C6\u30AF\u30B9\u30C1\u30E3\n      varying vec2 vUv; // \u30C6\u30AF\u30B9\u30C1\u30E3\u5EA7\u6A19\n      // out vec4 fragColor; // \u6700\u7D42\u7684\u306A\u30D4\u30AF\u30BB\u30EB\u306E\u8272\n\n      void main(void) {\n\n        // \u8272\u3092\u3064\u3051\u308B\u30D4\u30AF\u30BB\u30EB\u306E\u5EA7\u6A19\u3092\u6B63\u898F\u5316(-1~1)\u3057\u307E\u3059\n        vec2 p = (gl_FragCoord.xy * 2.0 - uResolution) / min(uResolution.x, uResolution.y);\n\n        // \u30E2\u30B6\u30A4\u30AF\u4FC2\u6570\u3092\u4F5C\u308A\u307E\u3059\n        float mosaic = (1.0 - step(0.3, length(p - uMouse))) * max(uResolution.x, uResolution.y) + 50.0;\n\n        // \u30E2\u30B6\u30A4\u30AF\u4FC2\u6570\u3092\u4F7F\u3063\u3066\u30C6\u30AF\u30B9\u30C1\u30E3\u5EA7\u6A19\u3092\u5909\u63DB\u3057\u307E\u3059(\u3053\u3053\u3067\u30E2\u30B6\u30A4\u30AF\u52A0\u5DE5\u3092\u3057\u3066\u3044\u307E\u3059)\n        vec2 uv = vec2(0.0, 0.0);\n\n        // \u30C6\u30AF\u30B9\u30C1\u30E3\u304B\u3089\u8272\u3092\u53D6\u308A\u51FA\u3057\u3066\u30D4\u30AF\u30BB\u30EB\u306E\u8272\u3068\u3057\u307E\u3059\n        gl_FragColor = texture(uTexture0, uv);\n        \n      }\n      // varying vec2 vUv;\n      // uniform sampler2D uTex;\n\n      // void main() {\n      //   vec4 color = vec4(0.0, 1.0, 1.0, 1.0);// rgba\n      //   gl_FragColor = color;\n      // }\n    "; // ベースとなるシーンには板ポリ１枚だけしかありません
+      // シェーダーを使うのでShaderMaterialを使います
+
+      var geo = new three__WEBPACK_IMPORTED_MODULE_6__.PlaneGeometry(2, 2); // 板ポリをウィンドウぴったりにするために２×２
+
+      this.mat = new three__WEBPACK_IMPORTED_MODULE_6__.ShaderMaterial({
+        vertexShader: vertexShader,
+        // 頂点シェーダー
+        fragmentShader: fragmentShader,
+        uniforms: this.uniforms
+      });
+      var plane = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(geo, this.mat);
+      plane.position.set(0, 0, 1); //#TODO (0,0,5)だと表示される
+
+      var _this = this;
+
+      this.offScene = new three__WEBPACK_IMPORTED_MODULE_6__.Scene();
+      this.offCamera = new three__WEBPACK_IMPORTED_MODULE_6__.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      this.offCamera.position.set(0, 0, 5);
+      var ambientLight = new three__WEBPACK_IMPORTED_MODULE_6__.AmbientLight(0xaaaaaa);
+      this.offScene.add(ambientLight);
+      var directionalLight = new three__WEBPACK_IMPORTED_MODULE_6__.DirectionalLight(0xffffff, 1.0);
+      directionalLight.position.set(-1, 2, 2);
+      this.offScene.add(directionalLight);
+      var _offScene = this.offScene; // this.offScene.add(plane);
+      // // ボックスジオメトリとマテリアルの作成
+      // const geometry = new BoxGeometry(1, 1, 1);
+      // const material = new MeshBasicMaterial({ color: 0x00ff00 });
+      // const cube = new Mesh(geometry, material);
+      // // ボックスをシーンに追加
+      // this.offScene.add(cube);
+
+      var postScene = new three__WEBPACK_IMPORTED_MODULE_6__.Scene();
+      var postGeometry = new three__WEBPACK_IMPORTED_MODULE_6__.PlaneBufferGeometry(2, 2);
+      var postMaterial = new three__WEBPACK_IMPORTED_MODULE_6__.ShaderMaterial({
+        vertexShader: vertexShader,
+        // 頂点シェーダー
+        fragmentShader: fragmentShader,
+        uniforms: {
+          t1: {
+            type: "t",
+            value: this.renderTarget.texture
+          }
+        }
+      });
+      var postMesh = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(postGeometry, postMaterial);
+      postScene.add(postMesh); // glbファイルを読み込み、シーンに追加
 
       gltfLoader.load('../assets/images/face.glb', function (gltf) {
         stage.scene.add(gltf.scene);
         stage.face = gltf.scene;
 
         _this._animation(gltf);
+
+        var face_clone = gltf.scene.clone();
+        face_clone.position.set(1, 0, 0); // ライトを２種類作ります
+
+        _offScene.add(face_clone);
       }, undefined, function (error) {
         console.error(error);
-      }); // this._setMesh();
-
-      /*OBJファイルの場合
-       const manager = new LoadingManager();
-      manager.addHandler(/\.dds$/i, new DDSLoader()); // DDSローダーの準備
-      
-      // MTLファイルの読み込み
-      new MTLLoader(manager).load(
-        '../assets/images/face.mtl',
-        // ロード完了時の処理
-        function (materials) {
-          materials.preload();
-          // OBJファイルの読み込み
-          new OBJLoader(manager)
-            .setMaterials(materials) // マテリアルの指定
-            .load(
-              '../assets/images/face.obj', 
-              // ロード完了時の処理
-              function (object) {
-                stage.scene.add(object);
-                console.log('読み込み完了', object);
-                object.position.x = 0;
-                object.position.y = 0;
-                object.position.z = 0;
-              });
-        },
-      );
-      */
+      });
     }
   }, {
     key: "_setMesh",
-    value: function _setMesh() {
-      var geometry = new three__WEBPACK_IMPORTED_MODULE_6__.SphereBufferGeometry(0.20, 32, 32);
-      var material = new three__WEBPACK_IMPORTED_MODULE_6__.RawShaderMaterial({
-        vertexShader: _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_4__.default,
-        fragmentShader: _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_5__.default,
-        uniforms: {
-          u_scale: {
-            type: "f",
-            value: 1.5
-          },
-          u_color: {
-            type: "v3",
-            value: new three__WEBPACK_IMPORTED_MODULE_6__.Color(this.color)
-          }
-        }
-      });
-      this.mesh = new three__WEBPACK_IMPORTED_MODULE_6__.Mesh(geometry, material);
-      this.stage.scene.add(this.mesh); // gsap.to(this.mesh.material.uniforms.u_scale, {
-      //   duration: 1.0,
-      //   ease: 'none',
-      //   value: 1.0,
-      // })
-    }
+    value: function _setMesh() {}
   }, {
     key: "_animation",
     value: function _animation(_gltf) {
-      // _gltf.scene.scale.set(0.3, 0.3, 0.3);
-      // _gltf.scene.rotation.set(0, 10, 0);
-      // gsap.to(_gltf.scene.rotation, { y: 0, duration: 1,ease: "bounce.out"});
-      // gsap.to(_gltf.scene.scale, { x: 1, y: 1, z: 1, duration: 1, ease: "bounce.out" });
       var animations = _gltf.animations;
 
       if (animations && animations.length) {
-        // console.log("this.mixer", this.mixer);
         //Animation Mixerインスタンスを生成
         this.mixer = new three__WEBPACK_IMPORTED_MODULE_6__.AnimationMixer(_gltf.scene); //全てのAnimation Clipに対して
 
@@ -391,14 +221,20 @@ var _Object = /*#__PURE__*/function () {
   }, {
     key: "_render",
     value: function _render() {
-      //
-      // TODO  requestAnimationFrame(_render);
-      // this.stage.renderer.render(this.stage.scene, this.stage.camera);
-      // requestAnimationFrame(_render);
-      //Animation Mixerを実行
+      // Animation Mixerを実行
       if (this.mixer) {
         this.mixer.update(this.clock.getDelta());
       }
+
+      this.webGLRenderer.setClearColor(0xf5f542); // 背景色
+
+      this.webGLRenderer.setRenderTarget(this.renderTarget);
+      this.webGLRenderer.render(this.offScene, this.offCamera); // console.log("this.mat.uniforms = ", this.mat.uniforms.uResolution);
+      // this.uniforms.uResolution.value = [window.innerWidth, window.innerHeight];
+      // this.uniforms.uMouse.value = [0, 0]; // マウス座標
+      // this.uniforms.uTexture0.value = this.renderTarget.texture;
+
+      this.webGLRenderer.setRenderTarget(null); // レンダーターゲットを解除します
     }
   }, {
     key: "onResize",
@@ -408,162 +244,13 @@ var _Object = /*#__PURE__*/function () {
     key: "onRaf",
     value: function onRaf() {
       this._render();
+
+      this.webGLRenderer.render(this.offScene, this.offCamera); // this.stage.renderer.setClearColor(0x000000); // 背景色(今回は無くてもいい)
+      // this.stage.renderer.render(scene, camera); // ベース用のシーンとカメラをセットしてディスプレイ(canvas)に描き込みます
     }
   }]);
 
   return Object;
-}();
-
-
-
-/***/ }),
-
-/***/ "./src/assets/scripts/module/scroll.js":
-/*!*********************************************!*\
-  !*** ./src/assets/scripts/module/scroll.js ***!
-  \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Scroll)
-/* harmony export */ });
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var Scroll = /*#__PURE__*/function () {
-  function Scroll(stage) {
-    _classCallCheck(this, Scroll);
-
-    this.scrollY = 0;
-    this.stage = stage;
-  }
-
-  _createClass(Scroll, [{
-    key: "scrolled",
-    value: function scrolled(y) {
-      // console.log("scrollY",this.scrollY);
-      this.scrollY = y;
-      console.log("stage=", this.stage.face);
-
-      if (this.stage.face) {
-        // this.stage.face.position.y = this.scrollY * 0.01;     
-        this.stage.face.rotation.y = this.scrollY * 0.01; // this.stage.face.scale.set(
-        //     this.scrollY * 0.01,
-        //     this.scrollY * 0.01,
-        //     1
-        // );
-      }
-    }
-  }]);
-
-  return Scroll;
-}();
-
-
-
-/***/ }),
-
-/***/ "./src/assets/scripts/module/sphere.js":
-/*!*********************************************!*\
-  !*** ./src/assets/scripts/module/sphere.js ***!
-  \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Sphere)
-/* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var gsap__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! gsap */ "./node_modules/gsap/index.js");
-/* harmony import */ var dat_gui__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! dat.gui */ "./node_modules/dat.gui/build/dat.gui.module.js");
-/* harmony import */ var _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shaders/vertexshader.vert */ "./src/assets/scripts/shaders/vertexshader.vert");
-/* harmony import */ var _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shaders/fragmentshader.frag */ "./src/assets/scripts/shaders/fragmentshader.frag");
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-
-
-
-
-var Sphere = /*#__PURE__*/function () {
-  function Sphere(stage) {
-    _classCallCheck(this, Sphere);
-
-    this.color = '#fff';
-    this.stage = stage;
-  }
-
-  _createClass(Sphere, [{
-    key: "init",
-    value: function init() {
-      this._setMesh();
-
-      this._setDev();
-    }
-  }, {
-    key: "_setMesh",
-    value: function _setMesh() {
-      var geometry = new three__WEBPACK_IMPORTED_MODULE_3__.SphereBufferGeometry(0.20, 32, 32);
-      var material = new three__WEBPACK_IMPORTED_MODULE_3__.RawShaderMaterial({
-        vertexShader: _shaders_vertexshader_vert__WEBPACK_IMPORTED_MODULE_1__.default,
-        fragmentShader: _shaders_fragmentshader_frag__WEBPACK_IMPORTED_MODULE_2__.default,
-        uniforms: {
-          u_scale: {
-            type: "f",
-            value: 1.5
-          },
-          u_color: {
-            type: "v3",
-            value: new three__WEBPACK_IMPORTED_MODULE_3__.Color(this.color)
-          }
-        }
-      });
-      this.mesh = new three__WEBPACK_IMPORTED_MODULE_3__.Mesh(geometry, material);
-      this.stage.scene.add(this.mesh);
-      gsap__WEBPACK_IMPORTED_MODULE_4__.gsap.to(this.mesh.material.uniforms.u_scale, {
-        duration: 1.0,
-        ease: 'none',
-        value: 1.0
-      });
-    }
-  }, {
-    key: "_setDev",
-    value: function _setDev() {
-      var _this = this;
-
-      var parameter = {
-        color: this.color
-      };
-      var gui = new dat_gui__WEBPACK_IMPORTED_MODULE_0__.GUI();
-      gui.addColor(parameter, "color").name("color").onChange(function (value) {
-        _this.mesh.material.uniforms.u_color.value = new three__WEBPACK_IMPORTED_MODULE_3__.Color(value);
-      });
-    }
-  }, {
-    key: "_render",
-    value: function _render() {//
-    }
-  }, {
-    key: "onResize",
-    value: function onResize() {//
-    }
-  }, {
-    key: "onRaf",
-    value: function onRaf() {
-      this._render();
-    }
-  }]);
-
-  return Sphere;
 }();
 
 
